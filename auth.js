@@ -36,9 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     googleAuth.disabled = true;
+    const redirectUrl = new URL('portal.html', window.location.href).href;
     const { error } = await window.supabaseClient.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: `${window.location.origin}/portal.html` }
+      options: { redirectTo: redirectUrl }
     });
     if (error) {
       googleAuth.disabled = false;

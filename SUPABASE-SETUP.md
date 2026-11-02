@@ -39,10 +39,11 @@ Untuk tahap lokal, konfirmasi email dapat dimatikan dari **Authentication > Prov
 
 ```text
 http://localhost:3000/portal.html
-https://domain-anda.example/portal.html
+http://127.0.0.1:5500/portal.html
+https://mrairsln1249-widu.github.io/psbperadaban/portal.html
 ```
 
-Tombol Google pada [auth.html](./auth.html) menggunakan redirect ke `portal.html`.
+Tombol Google pada [auth.html](./auth.html) menggunakan URL `portal.html` relatif terhadap halaman yang sedang dibuka, sehingga path project GitHub Pages tetap benar.
 
 ## 5. Membuat admin
 
