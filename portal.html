@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portal Pendaftar — PSB</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="portal.css"></head>
+<body class="portal-page">
+  <main class="portal-shell">
+    <header class="portal-header"><div><a class="portal-brand" href="index.html"><img src="logopp.jpg" alt="Logo Pesantren Peradaban"><span>Portal Pendaftar</span></a><h1>Lengkapi Pendaftaran</h1><p id="portalEmail"></p></div><button class="btn btn--ghost" id="logout">Keluar</button></header>
+    <div class="portal-grid">
+      <section class="portal-card"><h2>Data Pendaftar</h2><div class="status-stepper" id="statusStepper"></div><form class="portal-form" id="registrationForm">
+        <label>Nama lengkap santri<input name="nama" required></label><label>Tempat, tanggal lahir<input name="ttl" required></label>
+        <label>Jenjang<select name="jenjang" required><option value="">Pilih jenjang</option><option>MTs</option><option>MA</option></select></label>
+        <label>Asal sekolah<input name="asal_sekolah" required></label><label>Gelombang<select name="gelombang" required><option value="">Pilih gelombang</option><option>Gelombang 1 (Diskon 30%)</option><option>Gelombang 2</option><option>Gelombang 3</option></select></label>
+        <label>Nama orang tua/wali<input name="nama_wali" required></label><label>WhatsApp wali<input name="wa_wali" required></label>
+        <label class="full">Alamat<textarea name="alamat" required></textarea></label><label class="full">Catatan tambahan<textarea name="catatan"></textarea></label>
+        <div class="full portal-actions"><button class="btn btn--ghost" type="submit" id="saveRegistration">Simpan Draft</button><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><p class="portal-status" id="registrationStatus"></p></div>
+      </form></section>
+      <aside class="portal-card"><h2>Upload Dokumen</h2><p>Pas foto, KK, dan akta wajib. Rapor dan ijazah bersifat opsional.</p><div class="document-list" id="documents"><div class="document-row"><strong>Isi data pendaftaran terlebih dahulu</strong><small>Dokumen tersedia setelah data disimpan.</small></div></div></aside>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="supabase-client.js"></script><script src="portal.js"></script>
+</body>
+</html>

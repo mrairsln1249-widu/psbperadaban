@@ -1,0 +1,31 @@
+.portal-page { min-height: 100vh; background: #f4f7f9; }
+.auth-shell, .portal-shell { width: min(100% - 32px, 1120px); margin: 0 auto; padding: 32px 0 64px; }
+.auth-shell { max-width: 500px; }
+.portal-brand { display: inline-flex; align-items: center; gap: 12px; color: var(--primary); font-weight: 700; margin-bottom: 24px; }
+.portal-brand img { width: 48px; height: 48px; object-fit: contain; background: #fff; border-radius: 12px; }
+.auth-card, .portal-card { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 32px; box-shadow: var(--shadow-lg); }
+.auth-tabs { display: flex; gap: 8px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+.auth-tab { border: 0; background: none; padding: 10px 14px; color: var(--ink-2); border-bottom: 2px solid transparent; }
+.auth-tab.is-active { color: var(--primary); border-bottom-color: var(--accent); font-weight: 600; }
+.auth-divider { display: flex; align-items: center; gap: 12px; color: var(--ink-3); font-size: 12px; margin: 20px 0 14px; }.auth-divider::before, .auth-divider::after { content: ""; height: 1px; background: var(--line); flex: 1; }
+.auth-switch { text-align: center; font-size: 13px; color: var(--ink-2); }.auth-switch button { border: 0; background: none; color: var(--primary); font-weight: 700; padding: 0; cursor: pointer; }
+.auth-card h1, .portal-card h1 { font-size: 30px; margin-bottom: 8px; }
+.auth-card > p, .portal-card > p { color: var(--ink-2); margin: 0 0 24px; }
+.auth-card label, .portal-form label { display: block; color: var(--primary); font-size: 13px; font-weight: 600; margin-bottom: 16px; }
+.auth-card label[hidden] { display: none; }
+.auth-card input, .portal-form input, .portal-form select, .portal-form textarea { width: 100%; margin-top: 7px; padding: 12px 14px; border: 1px solid var(--line-2); border-radius: 10px; font: inherit; background: #fff; }
+.portal-status { min-height: 22px; font-size: 13px; margin: 16px 0; color: var(--ink-2); }
+.portal-status.is-error { color: var(--danger); }.portal-status.is-success { color: var(--success); }
+.portal-back { color: var(--primary); font-size: 13px; }
+.portal-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 28px; }
+.portal-header h1 { margin: 0; }.portal-header p { color: var(--ink-2); margin: 4px 0 0; }
+.portal-grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 20px; }
+.portal-form { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }.portal-form .full { grid-column: 1 / -1; }
+.portal-card h2 { color: var(--primary); font-size: 20px; margin: 0 0 20px; }
+.document-list { display: grid; gap: 12px; }.document-row { padding: 14px; border: 1px solid var(--line); border-radius: 10px; }
+.document-row strong { display: block; font-size: 13px; color: var(--primary); margin-bottom: 6px; }.document-row small { color: var(--ink-2); }
+.table-wrap { overflow-x: auto; }.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }.data-table th, .data-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }.data-table th { color: var(--primary); background: #f8fafb; }
+.badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eef2f6; color: var(--primary); font-size: 11px; }
+.portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }
+.status-stepper { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 22px; }.status-step { padding: 7px 10px; border-radius: 8px; background: #eef2f6; color: var(--ink-2); font-size: 11px; }.status-step.is-current { background: var(--accent); color: var(--primary); font-weight: 700; }.status-step.is-done { background: #d7f5e8; color: #087443; }
+@media (max-width: 760px) { .portal-grid, .portal-form { grid-template-columns: 1fr; }.portal-form .full { grid-column: auto; }.portal-header { align-items: flex-start; flex-direction: column; }.auth-card, .portal-card { padding: 24px; } }

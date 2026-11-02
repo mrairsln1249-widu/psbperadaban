@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login & Registrasi — PSB Pesantren Peradaban</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body class="portal-page">
+  <main class="auth-shell">
+    <a class="portal-brand" href="index.html"><img src="logopp.jpg" alt="Logo Pesantren Peradaban"><span>Portal PSB</span></a>
+    <section class="auth-card">
+      <div class="auth-tabs">
+        <button class="auth-tab is-active" data-mode="login">Masuk</button>
+        <button class="auth-tab" data-mode="signup">Daftar Akun</button>
+      </div>
+      <h1 id="authTitle">Masuk ke Portal PSB</h1>
+      <p id="authDescription">Pantau proses pendaftaran santri Anda melalui portal resmi.</p>
+      <form id="authForm">
+        <label id="nameField" hidden>Nama lengkap<input id="fullName" type="text" autocomplete="name"></label>
+        <label id="emailLabel">Email<input id="email" type="email" autocomplete="email" required></label>
+        <label>Password<input id="password" type="password" minlength="6" autocomplete="current-password" required></label>
+        <button class="btn btn--primary btn--block" type="submit" id="authSubmit">Masuk</button>
+      </form>
+      <div class="auth-divider"><span>atau</span></div>
+      <button class="google-auth btn btn--ghost btn--block" type="button" id="googleAuth">Lanjut dengan Google</button>
+      <p class="auth-switch" id="authSwitch"></p>
+      <p class="portal-status" id="authStatus" role="status"></p>
+      <a class="portal-back" href="index.html">← Kembali ke halaman utama</a>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script><script src="supabase-client.js"></script><script src="auth.js"></script>
+</body>
+</html>
