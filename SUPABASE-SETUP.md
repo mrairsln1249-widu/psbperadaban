@@ -4,7 +4,10 @@
 
 Buat project Supabase, lalu buka **SQL Editor** dan jalankan seluruh isi `supabase-schema.sql`.
 
-Jika project sudah pernah dibuat dengan skema lama, jalankan migration status berikut setelah schema utama:
+Jika project sudah pernah dibuat, jalankan juga seluruh isi [supabase-registration-form-migration.sql](./supabase-registration-form-migration.sql) untuk menambahkan kolom formulir baru, mengaktifkan beberapa file KTP Ayah, dan mengizinkan pendaftar menyimpan draft sendiri.
+Migration mengatur batas bucket dokumen menjadi 2 MB per file. Pastikan batas ukuran file global di pengaturan Storage Supabase juga minimal 2 MB.
+
+Jika project lama masih memakai daftar status yang lebih pendek, jalankan migration status berikut:
 
 ```sql
 alter table public.registrations drop constraint if exists registrations_status_check;
@@ -39,11 +42,15 @@ Untuk tahap lokal, konfirmasi email dapat dimatikan dari **Authentication > Prov
 
 ```text
 http://localhost:3000/portal.html
+http://localhost:3000/reset-password.html
 http://127.0.0.1:5500/portal.html
+http://127.0.0.1:5500/reset-password.html
 https://mrairsln1249-widu.github.io/psbperadaban/portal.html
+https://mrairsln1249-widu.github.io/psbperadaban/reset-password.html
 ```
 
 Tombol Google pada [auth.html](./auth.html) menggunakan URL `portal.html` relatif terhadap halaman yang sedang dibuka, sehingga path project GitHub Pages tetap benar.
+Tautan **Lupa password?** mengirim email reset ke halaman `reset-password.html`; pastikan URL halaman tersebut diizinkan pada **Authentication > URL Configuration > Redirect URLs**.
 
 ## 5. Membuat admin
 

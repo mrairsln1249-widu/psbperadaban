@@ -5,17 +5,52 @@
   <main class="portal-shell">
     <header class="portal-header"><div><a class="portal-brand" href="index.html"><img src="logopp.jpg" alt="Logo Pesantren Peradaban"><span>Portal Pendaftar</span></a><h1>Lengkapi Pendaftaran</h1><p id="portalEmail"></p></div><button class="btn btn--ghost" id="logout">Keluar</button></header>
     <div class="portal-grid">
-      <section class="portal-card"><h2>Data Pendaftar</h2><div class="status-stepper" id="statusStepper"></div><form class="portal-form" id="registrationForm">
-        <label>Nama lengkap santri<input name="nama" required></label><label>Tempat, tanggal lahir<input name="ttl" required></label>
-        <label>Jenjang<select name="jenjang" required><option value="">Pilih jenjang</option><option>MTs</option><option>MA</option></select></label>
-        <label>Asal sekolah<input name="asal_sekolah" required></label><label>Gelombang<select name="gelombang" required><option value="">Pilih gelombang</option><option>Gelombang 1 (Diskon 30%)</option><option>Gelombang 2</option><option>Gelombang 3</option></select></label>
-        <label>Nama orang tua/wali<input name="nama_wali" required></label><label>WhatsApp wali<input name="wa_wali" required></label>
-        <label class="full">Alamat<textarea name="alamat" required></textarea></label><label class="full">Catatan tambahan<textarea name="catatan"></textarea></label>
-        <div class="full portal-actions"><button class="btn btn--ghost" type="submit" id="saveRegistration">Simpan Draft</button><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><p class="portal-status" id="registrationStatus"></p></div>
+      <section class="portal-card"><h2>Data Pendaftar</h2><div class="status-stepper" id="statusStepper"></div><form class="portal-form" id="registrationForm" novalidate>
+        <label>Nama Lengkap Calon Siswa/Santri *<input name="nama" required></label>
+        <label>Tempat Lahir *<input name="tempat_lahir" autocomplete="address-level2" required></label>
+        <label>Tanggal Lahir *<input name="tanggal_lahir" type="date" autocomplete="bday" required></label>
+        <fieldset class="full choice-group"><legend>Jenis Kelamin *</legend><label class="choice-option"><input name="jenis_kelamin" type="radio" value="Laki-laki" required> Laki-laki</label><label class="choice-option"><input name="jenis_kelamin" type="radio" value="Perempuan" required> Perempuan</label></fieldset>
+        <label>Asal Sekolah *<input name="asal_sekolah" required></label>
+        <label>Jenjang dan program yg akan diambil *
+          <select name="jenjang" required>
+            <option value="">Pilih jenjang dan program</option>
+            <option>SMP (Pesantren)</option>
+            <option>SMA (Full day/sekolah saja)</option>
+            <option>SMA (Sekolah dan Pesantren)</option>
+          </select>
+        </label>
+        <label class="full">Alamat Lengkap calon Santri/Siswa (Sesuai Kartu Keluarga)<textarea name="alamat_santri"></textarea></label>
+        <label>Nomor HP/WA Calon Siswa/Santri *<input name="wa_santri" type="tel" autocomplete="tel" required></label>
+        <label>Nama Ayah Kandung (awali dengan Alm apabila telah wafat) *<input name="nama_ayah" required></label>
+        <label>Nama Ibu Kandung (awali dengan Almh apabila telah wafat) *<input name="nama_ibu" required></label>
+        <label>Nomor HP/WA Orang Tua *<input name="wa_orangtua" type="tel" required></label>
+        <label class="full">Alamat Lengkap Orang Tua (Sesuai KTP) *<textarea name="alamat_orangtua" required></textarea></label>
+        <label class="full">Memperoleh Informasi SMA Pesantren Peradaban dari mana/siapa? (tuliskan secara detail nama sumber) *<textarea name="sumber_informasi" required></textarea></label>
+        <label class="full">Motivasi Calon Santri mendaftar di Sekolah/Pesantren Ini *<textarea name="motivasi_santri" required></textarea></label>
+        <label class="full">Motivasi Orangtua/Wali calon Santri mendaftar di Sekolah/Pesantren ini *<textarea name="motivasi_orangtua" required></textarea></label>
+        <fieldset class="full choice-group"><legend>Rata-rata nilai rapor SMP tiap semester dari semester 1 - 5 *</legend>
+          <div class="grade-grid">
+            <label>Semester 1<input name="nilai_rapor_semester_1" type="number" min="0" max="100" step="0.01" required></label>
+            <label>Semester 2<input name="nilai_rapor_semester_2" type="number" min="0" max="100" step="0.01" required></label>
+            <label>Semester 3<input name="nilai_rapor_semester_3" type="number" min="0" max="100" step="0.01" required></label>
+            <label>Semester 4<input name="nilai_rapor_semester_4" type="number" min="0" max="100" step="0.01" required></label>
+            <label>Semester 5<input name="nilai_rapor_semester_5" type="number" min="0" max="100" step="0.01" required></label>
+          </div>
+        </fieldset>
+        <div class="full payment-note"><strong>Informasi infaq pendaftaran</strong><p>Pendaftaran dikenakan infaq Rp150.000 ke No. Rek. BSI 7218572957 a/n Pesantren Peradaban Assalam (gratis untuk gelombang 1).</p></div>
+        <fieldset class="full choice-group"><legend>Dengan ini saya menyatakan dengan sesungguhnya bahwa semua informasi yang disampaikan dalam seluruh dokumen serta lampiran-lampirannya ini adalah benar dan kesatuan yang tidak dapat dipisahkan. Apabila diketemukan dan/atau dibuktikan adanya penipuan/pemalsuan atas informasi yang saya sampaikan, maka saya bersedia dikenakan dan menerima penerapan sanksi. *</legend><label class="choice-option"><input name="pernyataan_setuju" type="radio" value="true" required> Setuju</label><label class="choice-option"><input name="pernyataan_setuju" type="radio" value="false" required> Tidak setuju</label></fieldset>
+        <div class="full portal-actions"><button class="btn btn--ghost" type="submit" id="saveRegistration">Simpan Draft</button><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><div class="portal-status" id="registrationStatus" role="alert" aria-live="assertive" hidden></div></div>
       </form></section>
-      <aside class="portal-card"><h2>Upload Dokumen</h2><p>Pas foto, KK, dan akta wajib. Rapor dan ijazah bersifat opsional.</p><div class="document-list" id="documents"><div class="document-row"><strong>Isi data pendaftaran terlebih dahulu</strong><small>Dokumen tersedia setelah data disimpan.</small></div></div></aside>
+      <aside class="portal-card"><h2>Upload Dokumen</h2><p>Simpan data pendaftaran terlebih dahulu sebelum mengunggah berkas.</p><div class="document-list" id="documents"><div class="document-row"><strong>Isi data pendaftaran terlebih dahulu</strong><small>Dokumen tersedia setelah data disimpan.</small></div></div></aside>
     </div>
   </main>
+  <dialog class="registration-notice" id="registrationNotice" aria-labelledby="registrationNoticeTitle" aria-describedby="registrationNoticeMessage">
+    <div class="registration-notice__content">
+      <h2 id="registrationNoticeTitle">Informasi pendaftaran</h2>
+      <p id="registrationNoticeMessage"></p>
+      <button class="btn btn--primary" type="button" id="closeRegistrationNotice">Tutup</button>
+    </div>
+  </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script src="supabase-client.js"></script><script src="portal.js"></script>
 </body>
 </html>

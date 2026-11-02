@@ -21,6 +21,7 @@
         <label id="nameField" hidden>Nama lengkap<input id="fullName" type="text" autocomplete="name"></label>
         <label id="emailLabel">Email<input id="email" type="email" autocomplete="email" required></label>
         <label>Password<input id="password" type="password" minlength="6" autocomplete="current-password" required></label>
+        <button class="auth-forgot" id="forgotPassword" type="button">Lupa password?</button>
         <button class="btn btn--primary btn--block" type="submit" id="authSubmit">Masuk</button>
       </form>
       <div class="auth-divider"><span>atau</span></div>
@@ -30,6 +31,13 @@
       <a class="portal-back" href="index.html">← Kembali ke halaman utama</a>
     </section>
   </main>
+  <dialog class="registration-notice" id="authNotice" aria-labelledby="authNoticeTitle" aria-describedby="authNoticeMessage">
+    <div class="registration-notice__content">
+      <h2 id="authNoticeTitle">Informasi akun</h2>
+      <p id="authNoticeMessage"></p>
+      <button class="btn btn--primary" type="button" id="closeAuthNotice">Tutup</button>
+    </div>
+  </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script><script src="supabase-client.js"></script><script src="auth.js"></script>
 </body>
