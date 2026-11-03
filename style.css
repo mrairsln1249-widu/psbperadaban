@@ -149,10 +149,7 @@ h1, h2, h3, h4 {
 .brand__logo {
   width: 40px;
   height: 40px;
-  border-radius: 10px;
   object-fit: contain;
-  background: #fff;
-  box-shadow: var(--shadow-sm);
 }
 .brand__mark {
   width: 40px;
@@ -949,10 +946,8 @@ h1, h2, h3, h4 {
 .footer__logo {
   width: 72px;
   height: 72px;
-  border-radius: 16px;
   margin-bottom: 16px;
   object-fit: contain;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 .footer h3 {
   font-size: 20px;
