@@ -21,9 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   /* ---------- Countdown timer ---------- */
-  const targetDate = new Date();
-  targetDate.setDate(targetDate.getDate() + 90); // Atur mundur 90 hari dari hari ini
-  targetDate.setHours(23, 59, 59, 0);
+  const targetDate = new Date('2027-07-17T23:59:59+07:00');
 
   const closeDateEl = document.getElementById('close-date');
   if (closeDateEl) {
@@ -152,39 +150,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const faqAnswers = {
     biaya: {
-      answer: 'Biaya pendaftaran <b>Gelombang 1: Rp 350.000</b>.<br><br>Biaya pendidikan Rp 6.500.000/tahun dan biaya asrama Rp 4.800.000/tahun.<br><br>Tersedia beasiswa hingga 100% untuk santri berprestasi dan yatim.',
+      answer: 'Pendaftaran formulir dan administrasi awal <b>100% gratis</b>.<br><br>Biaya pendidikan menggunakan sistem subsidi silang: SMA SPP Rp 600.000 / Rp 350.000 / Rp 150.000 per bulan; SMP SPP Rp 450.000 / Rp 300.000 / Rp 100.000 per bulan sesuai golongan.<br><br>Wakaf Sarpras dibayarkan satu kali dan tersedia dukungan beasiswa.',
       followUps: [
         { id: 'beasiswa', text: 'Apa saja jenis beasiswa?' },
         { id: 'pembayaran', text: 'Bagaimana cara pembayarannya?' }
       ]
     },
     syarat: {
-      answer: 'Dokumen yang perlu disiapkan:<br>1. Kartu Keluarga (KK)<br>2. Akta Kelahiran<br>3. Pas Foto 3x4<br>4. Rapor terakhir<br>5. Surat izin orang tua jika diperlukan.',
+      answer: 'Dokumen umum:<br>1. Bukti daftar online<br>2. Pas foto terbaru latar merah ukuran 4x6<br>3. Akta kelahiran<br>4. KK terbaru ber-barcode<br>5. Surat pernyataan orang tua/wali<br>6. Slip gaji atau surat keterangan penghasilan.<br><br>Rapor, ijazah, surat berkelakuan baik, KIP/PKH/KKS, dan sertifikat prestasi disiapkan sesuai kebutuhan.',
       followUps: [
         { id: 'unggah', text: 'Bagaimana cara mengunggah berkas?' },
         { id: 'alur', text: 'Lihat alur pendaftaran' }
       ]
     },
     alur: {
-      answer: 'Alur pendaftaran:<br>1. Registrasi akun<br>2. Isi formulir online<br>3. Unggah berkas<br>4. Bayar biaya pendaftaran<br>5. Ikuti tes seleksi<br>6. Pengumuman kelulusan.',
+      answer: 'Alur pendaftaran:<br>1. Isi formulir online atau datang ke sekretariat<br>2. Pendaftaran gratis<br>3. Serahkan bukti daftar dan berkas<br>4. Ikuti tes akademik dasar, BTQ, dan wawancara<br>5. Ikuti observasi orang tua/wali<br>6. Cek pengumuman resmi di website.',
       followUps: [
         { id: 'tes', text: 'Apa saja materi tes seleksi?' },
         { id: 'status', text: 'Bagaimana memantau status pendaftaran?' }
       ]
     },
     program: {
-      answer: "Program unggulan: Tahfiz Al-Qur'an, Sains & Riset, Bahasa Asing, serta Adab & Kepemimpinan.<br><br>Fasilitas meliputi asrama, laboratorium, perpustakaan, dan lingkungan Islami.",
+      answer: "Program tersedia: SMP, SMA (Boarding), dan Kesetaraan Paket C. Keunggulan meliputi Kurikulum Merdeka, kurikulum pesantren, Tahfidz Al-Qur'an, project-based learning, riset sains, magang, dan smart school.<br><br>Fasilitas meliputi asrama putra-putri, kelas modern, perpustakaan, laboratorium, olahraga, klinik/UKS, kantin, internet, dan Guest House.",
       followUps: [
         { id: 'asrama', text: 'Apakah santri wajib tinggal di asrama?' },
         { id: 'jenjang', text: 'Jenjang apa saja yang tersedia?' }
       ]
     },
     beasiswa: {
-      answer: 'Tersedia beasiswa prestasi akademik, tahfiz, yatim, dan bantuan untuk keluarga kurang mampu. Beasiswa dapat mencapai <b>100%</b> sesuai hasil seleksi.',
+      answer: 'Tersedia Program Indonesia Pintar (KEMDIKBUD) dan KIP Kuliah, Beasiswa Perintis, Beasiswa BAZNAS, serta beasiswa yayasan dan donatur atau pihak ketiga. Hubungi panitia untuk ketentuan masing-masing program.',
       followUps: [{ id: 'syarat_beasiswa', text: 'Apa syarat beasiswa?' }]
     },
     pembayaran: {
-      answer: 'Pembayaran dapat dilakukan melalui virtual account bank, QRIS, dan e-wallet. Instruksi pembayaran muncul setelah formulir dikirim.',
+      answer: 'Pendaftaran formulir dan administrasi awal gratis. Rincian biaya pendidikan ditetapkan berdasarkan golongan subsidi silang setelah dokumen penghasilan diverifikasi. Jika dokumen tidak dilampirkan, sistem menetapkan Golongan 1.',
       followUps: [{ id: 'alur', text: 'Lihat alur pendaftaran' }]
     },
     unggah: {
@@ -192,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
       followUps: [{ id: 'syarat', text: 'Lihat daftar berkas yang dibutuhkan' }]
     },
     tes: {
-      answer: 'Tes seleksi meliputi kemampuan akademik dasar, wawasan keislaman, membaca Al-Qur’an, dan wawancara calon santri bersama orang tua.',
+      answer: 'Tes seleksi dapat berlangsung offline atau online, meliputi akademik dasar (Matematika dan umum), Baca Tulis Al-Qur’an (BTQ), dan wawancara kepribadian. Orang tua/wali mengikuti observasi atau wawancara tersendiri.',
       followUps: [{ id: 'status', text: 'Bagaimana memantau status pendaftaran?' }]
     },
     status: {
@@ -200,11 +198,11 @@ document.addEventListener('DOMContentLoaded', () => {
       followUps: [{ id: 'wa', text: 'Tanya admin melalui WhatsApp', isWA: true }]
     },
     asrama: {
-      answer: 'Untuk jenjang MTs dan MA, santri mengikuti program asrama agar pembinaan adab, tahfiz, dan kemandirian berjalan optimal.',
+      answer: 'Program SMA merupakan boarding dengan asrama putra dan putri. Fasilitas asrama didukung ruang belajar, sarana olahraga, klinik/UKS, kantin, dapur umum, dan internet.',
       followUps: [{ id: 'program', text: 'Lihat program dan fasilitas' }]
     },
     jenjang: {
-      answer: 'Tersedia jenjang <b>MTs</b> untuk lulusan SD/MI dan <b>MA</b> untuk lulusan SMP/MTs.',
+      answer: 'Tersedia jenjang <b>SMP</b>, <b>SMA (Boarding)</b>, dan <b>Kesetaraan Paket C</b>. SMP diperuntukkan bagi lulusan SD/MI, sedangkan SMA bagi lulusan SMP/MTs.',
       followUps: [{ id: 'syarat', text: 'Lihat syarat pendaftaran' }]
     },
     syarat_beasiswa: {
