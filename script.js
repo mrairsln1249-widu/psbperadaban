@@ -279,6 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const islamicGreetingKeywords = ['assalamualaikum', 'assalamu alaikum', 'assalamu’alaikum'];
     const timeGreetingKeywords = ['selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam'];
     const casualGreetingKeywords = ['halo', 'hai', 'hi'];
+    const closingKeywords = ['oke', 'ok', 'terima kasih', 'terimakasih', 'jazakallah', 'jazakillah', 'syukran'];
     const intentKeywords = [
       { id: 'biaya', keywords: ['biaya', 'spp', 'wakaf', 'infaq beras', 'uang sekolah'] },
       { id: 'syarat', keywords: ['syarat', 'dokumen', 'berkas', 'rapor', 'akta', 'kartu keluarga', 'kk'] },
@@ -307,6 +308,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (casualGreetingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
       return {
         answer: 'Assalamu’alaikum warahmatullahi wabarakatuh. Selamat datang di layanan informasi PSB Pesantren Peradaban. Ada yang ingin Anda tanyakan?',
+        followUps: mainMenuOptions
+      };
+    }
+
+    if (closingKeywords.some(keyword => normalizedMessage === keyword || normalizedMessage.startsWith(`${keyword} `))) {
+      return {
+        answer: 'Sama-sama. Jazakumullahu khairan atas kunjungannya. Semoga informasi dari Pesantren Peradaban bermanfaat. Jika masih ada yang ingin ditanyakan, silakan pilih menu di bawah atau hubungi admin melalui WhatsApp.',
         followUps: mainMenuOptions
       };
     }
