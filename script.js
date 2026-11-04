@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
       followUps: [{ id: 'wa', text: 'Tanya admin melalui WhatsApp', isWA: true }]
     },
     asrama: {
-      answer: 'Program SMA merupakan boarding dengan asrama putra dan putri. Fasilitas asrama didukung ruang belajar, sarana olahraga, klinik/UKS, kantin, dapur umum, dan internet.',
+      answer: 'Ya, <b>semua santri wajib tinggal di lingkungan pesantren</b> selama mengikuti pendidikan. Ketentuan ini mendukung pembinaan adab, kemandirian, tahfidz, dan kegiatan belajar santri. Pesantren menyediakan asrama putra dan putri beserta ruang belajar, sarana olahraga, klinik/UKS, kantin, dapur umum, dan internet.',
       followUps: [{ id: 'program', text: 'Lihat program dan fasilitas' }]
     },
     jenjang: {
@@ -273,6 +273,54 @@ document.addEventListener('DOMContentLoaded', () => {
     chatSuggestions.style.display = 'flex';
   }
 
+  const unknownQuestionAnswer = 'Maaf, informasi untuk pertanyaan tersebut belum tersedia di sistem. Untuk informasi lebih lanjut, silakan hubungi admin melalui WhatsApp.';
+
+  function getLocalAnswer(message) {
+    const normalizedMessage = message.toLowerCase().replace(/\s+/g, ' ').trim();
+    const boardingKeywords = [
+      'asrama',
+      'berasrama',
+      'mondok',
+      'tinggal di pesantren',
+      'tinggal dipesantren',
+      'tinggal di lingkungan pesantren',
+      'wajib tinggal'
+    ];
+
+    if (boardingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
+      return faqAnswers.asrama;
+    }
+
+    return null;
+  }
+
+  async function requestChatbot(message) {
+    const response = await fetch('/api/chatbot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message })
+    });
+    const responseText = await response.text();
+    let result;
+
+    try {
+      result = JSON.parse(responseText);
+    } catch {
+      throw new Error('Respons chatbot tidak valid.');
+    }
+
+    if (!response.ok) {
+      throw new Error(result.message || 'Chatbot sedang tidak tersedia.');
+    }
+
+    return result;
+  }
+
+  function showUnknownAnswer() {
+    appendMessage(unknownQuestionAnswer, 'bot');
+    renderFollowUp();
+  }
+
   function handleQuestion(id, questionText) {
     chatSuggestions.style.display = 'none';
     appendMessage(questionText, 'user');
@@ -283,25 +331,19 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    fetch('/api/chatbot', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `${id} ${questionText}` }),
-    })
-      .then(async response => {
-        const result = await response.json();
-        if (!response.ok) throw new Error(result.message || 'Chatbot sedang tidak tersedia.');
-        return result;
-      })
+    const localAnswer = getLocalAnswer(questionText);
+    if (localAnswer) {
+      appendMessage(localAnswer.answer, 'bot');
+      renderFollowUp(localAnswer.followUps);
+      return;
+    }
+
+    requestChatbot(`${id} ${questionText}`)
       .then(result => {
         appendMessage(result.answer, 'bot');
-      })
-      .catch(error => {
-        appendMessage(error.message, 'bot');
-      })
-      .finally(() => {
         renderFollowUp();
-      });
+      })
+      .catch(() => showUnknownAnswer());
   }
 
   function appendMessage(text, sender) {
@@ -401,22 +443,19 @@ document.addEventListener('DOMContentLoaded', () => {
       chatSuggestions.style.display = 'none';
       appendMessage(val, 'user');
       input.value = '';
-      fetch('/api/chatbot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: val }),
-      })
-        .then(async response => {
-          const result = await response.json();
-          if (!response.ok) throw new Error(result.message || 'Chatbot sedang tidak tersedia.');
-          return result;
-        })
-        .then(result => appendMessage(result.answer, 'bot'))
-        .catch(error => appendMessage(error.message, 'bot'))
-        .finally(() => {
-          chatSuggestions.style.display = 'flex';
+      const localAnswer = getLocalAnswer(val);
+      if (localAnswer) {
+        appendMessage(localAnswer.answer, 'bot');
+        renderFollowUp(localAnswer.followUps);
+        return;
+      }
+
+      requestChatbot(val)
+        .then(result => {
+          appendMessage(result.answer, 'bot');
           renderFollowUp();
-        });
+        })
+        .catch(() => showUnknownAnswer());
     }
   }
 
