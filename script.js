@@ -274,25 +274,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const unknownQuestionAnswer = 'Maaf, informasi untuk pertanyaan tersebut belum tersedia di sistem. Untuk informasi lebih lanjut, silakan hubungi admin melalui WhatsApp.';
-  const greetingAnswer = {
-    answer: 'Wa’alaikumussalam warahmatullahi wabarakatuh. Selamat datang di layanan informasi PSB Pesantren Peradaban. Ada yang ingin Anda tanyakan?',
-    followUps: mainMenuOptions
-  };
-
   function getLocalAnswer(message) {
     const normalizedMessage = message.toLowerCase().replace(/\s+/g, ' ').trim();
-    const greetingKeywords = [
-      'assalamualaikum',
-      'assalamu alaikum',
-      'assalamu’alaikum',
-      'selamat pagi',
-      'selamat siang',
-      'selamat sore',
-      'selamat malam',
-      'halo',
-      'hai',
-      'hi'
-    ];
+    const islamicGreetingKeywords = ['assalamualaikum', 'assalamu alaikum', 'assalamu’alaikum'];
+    const timeGreetingKeywords = ['selamat pagi', 'selamat siang', 'selamat sore', 'selamat malam'];
+    const casualGreetingKeywords = ['halo', 'hai', 'hi'];
     const intentKeywords = [
       { id: 'biaya', keywords: ['biaya', 'spp', 'wakaf', 'infaq beras', 'uang sekolah'] },
       { id: 'syarat', keywords: ['syarat', 'dokumen', 'berkas', 'rapor', 'akta', 'kartu keluarga', 'kk'] },
@@ -303,8 +289,26 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'status', keywords: ['status pendaftaran', 'hasil seleksi', 'pengumuman'] }
     ];
 
-    if (greetingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
-      return greetingAnswer;
+    if (islamicGreetingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
+      return {
+        answer: 'Wa’alaikumussalam warahmatullahi wabarakatuh. Selamat datang di layanan informasi PSB Pesantren Peradaban. Ada yang ingin Anda tanyakan?',
+        followUps: mainMenuOptions
+      };
+    }
+
+    if (timeGreetingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
+      const greeting = timeGreetingKeywords.find(keyword => normalizedMessage.includes(keyword));
+      return {
+        answer: `Assalamu’alaikum warahmatullahi wabarakatuh.<br><br>${greeting.charAt(0).toUpperCase()}${greeting.slice(1)}. Selamat datang di layanan informasi PSB Pesantren Peradaban. Ada yang ingin Anda tanyakan?`,
+        followUps: mainMenuOptions
+      };
+    }
+
+    if (casualGreetingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
+      return {
+        answer: 'Assalamu’alaikum warahmatullahi wabarakatuh. Selamat datang di layanan informasi PSB Pesantren Peradaban. Ada yang ingin Anda tanyakan?',
+        followUps: mainMenuOptions
+      };
     }
 
     const boardingKeywords = [
