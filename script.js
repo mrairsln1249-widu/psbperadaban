@@ -277,6 +277,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function getLocalAnswer(message) {
     const normalizedMessage = message.toLowerCase().replace(/\s+/g, ' ').trim();
+    const intentKeywords = [
+      { id: 'biaya', keywords: ['biaya', 'spp', 'wakaf', 'infaq beras', 'uang sekolah'] },
+      { id: 'syarat', keywords: ['syarat', 'dokumen', 'berkas', 'rapor', 'akta', 'kartu keluarga', 'kk'] },
+      { id: 'alur', keywords: ['alur', 'cara daftar', 'cara mendaftar', 'pendaftaran'] },
+      { id: 'program', keywords: ['program', 'fasilitas', 'paket c', 'jenjang'] },
+      { id: 'beasiswa', keywords: ['beasiswa', 'kip', 'baznas'] },
+      { id: 'tes', keywords: ['tes', 'ujian', 'asesmen', 'seleksi'] },
+      { id: 'status', keywords: ['status pendaftaran', 'hasil seleksi', 'pengumuman'] }
+    ];
     const boardingKeywords = [
       'asrama',
       'berasrama',
@@ -289,6 +298,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (boardingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
       return faqAnswers.asrama;
+    }
+
+    const matchedIntent = intentKeywords.find(intent =>
+      intent.keywords.some(keyword => normalizedMessage.includes(keyword))
+    );
+    if (matchedIntent) {
+      return faqAnswers[matchedIntent.id];
     }
 
     return null;
