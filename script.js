@@ -274,9 +274,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const unknownQuestionAnswer = 'Maaf, informasi untuk pertanyaan tersebut belum tersedia di sistem. Untuk informasi lebih lanjut, silakan hubungi admin melalui WhatsApp.';
+  const greetingAnswer = {
+    answer: 'Wa’alaikumussalam warahmatullahi wabarakatuh. Selamat datang di layanan informasi PSB Pesantren Peradaban. Ada yang ingin Anda tanyakan?',
+    followUps: mainMenuOptions
+  };
 
   function getLocalAnswer(message) {
     const normalizedMessage = message.toLowerCase().replace(/\s+/g, ' ').trim();
+    const greetingKeywords = [
+      'assalamualaikum',
+      'assalamu alaikum',
+      'assalamu’alaikum',
+      'selamat pagi',
+      'selamat siang',
+      'selamat sore',
+      'selamat malam',
+      'halo',
+      'hai',
+      'hi'
+    ];
     const intentKeywords = [
       { id: 'biaya', keywords: ['biaya', 'spp', 'wakaf', 'infaq beras', 'uang sekolah'] },
       { id: 'syarat', keywords: ['syarat', 'dokumen', 'berkas', 'rapor', 'akta', 'kartu keluarga', 'kk'] },
@@ -286,6 +302,11 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'tes', keywords: ['tes', 'ujian', 'asesmen', 'seleksi'] },
       { id: 'status', keywords: ['status pendaftaran', 'hasil seleksi', 'pengumuman'] }
     ];
+
+    if (greetingKeywords.some(keyword => normalizedMessage.includes(keyword))) {
+      return greetingAnswer;
+    }
+
     const boardingKeywords = [
       'asrama',
       'berasrama',
