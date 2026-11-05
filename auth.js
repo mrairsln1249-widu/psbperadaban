@@ -122,8 +122,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('password').value;
     let result;
     try {
+      const emailRedirectTo = new URL('portal.html', window.location.href).href;
       result = mode === 'signup'
-        ? await window.supabaseClient.auth.signUp({ email, password, options: { data: { full_name: fullName.value.trim() } } })
+        ? await window.supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+              emailRedirectTo,
+              data: { full_name: fullName.value.trim() }
+            }
+          })
         : await window.supabaseClient.auth.signInWithPassword({ email, password });
     } catch (error) {
       submit.disabled = false;

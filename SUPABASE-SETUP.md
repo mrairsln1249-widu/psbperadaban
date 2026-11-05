@@ -28,9 +28,54 @@ window.SUPABASE_CONFIG = {
 
 Anon key memang boleh digunakan di browser. Jangan pernah menaruh `service_role` key di file frontend.
 
-## 3. Konfigurasi email
+## 3. Konfigurasi email konfirmasi
 
-Untuk tahap lokal, konfirmasi email dapat dimatikan dari **Authentication > Providers > Email**. Untuk produksi, biarkan konfirmasi email aktif dan atur SMTP resmi.
+Untuk produksi, biarkan konfirmasi email aktif. Formulir signup sudah mengirimkan `emailRedirectTo` ke halaman `portal.html`, sehingga tautan konfirmasi mengembalikan pengguna ke portal setelah alamat email berhasil diverifikasi.
+
+Tambahkan URL berikut pada **Authentication > URL Configuration > Redirect URLs**:
+
+```text
+http://localhost:3000/portal.html
+http://127.0.0.1:5500/portal.html
+https://psb.pesantrenperadaban.my.id/portal.html
+https://mrairsln1249-widu.github.io/psbperadaban/portal.html
+```
+
+Atur isi email di **Authentication > Email Templates > Confirm signup**. Contoh isi formal:
+
+```text
+Subjek:
+Konfirmasi Email — Portal PSB Pesantren Peradaban
+
+Isi:
+Assalamu’alaikum Warahmatullahi Wabarakatuh,
+
+Yth. Bapak/Ibu {{ .Email }},
+
+Terima kasih telah mendaftarkan akun pada Portal Penerimaan Santri Baru (PSB) Pesantren Peradaban Tahun Pelajaran 2027/2028.
+
+Untuk mengaktifkan akun dan melanjutkan proses pendaftaran, silakan konfirmasi alamat email Anda dengan mengeklik tombol berikut:
+
+{{ .ConfirmationURL }}
+
+Apabila Bapak/Ibu tidak merasa membuat akun ini, silakan abaikan email ini.
+
+Wassalamu’alaikum Warahmatullahi Wabarakatuh,
+
+Panitia PSB
+Pesantren Peradaban
+```
+
+Gunakan **Project Settings > Auth > SMTP Settings** untuk menghubungkan SMTP resmi. Tanpa SMTP kustom, email akan dikirim melalui layanan email bawaan Supabase sehingga nama pengirim dan batas pengiriman mengikuti Supabase.
+
+Rekomendasi pengaturan SMTP:
+
+```text
+Sender name: Panitia PSB Pesantren Peradaban
+Sender email: admin@pesantrenperadaban.my.id
+```
+
+Pastikan domain pengirim memiliki record DNS SPF, DKIM, dan DMARC sesuai instruksi penyedia email. Jangan menaruh password SMTP di frontend atau repository.
 
 ## 4. Aktifkan login Google
 
