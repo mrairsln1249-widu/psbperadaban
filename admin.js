@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const createdCell = document.createElement('td');
         const actionCell = document.createElement('td');
         const contactLink = document.createElement('a');
+        const whatsappLink = document.createElement('a');
         nameCell.textContent = account.full_name || 'Pendaftar';
         emailCell.textContent = account.email || '-';
         createdCell.textContent = new Date(account.created_at).toLocaleDateString('id-ID');
@@ -51,11 +52,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         contactLink.href = account.email ? `mailto:${account.email}` : '#';
         contactLink.textContent = 'Hubungi via Email';
         if (!account.email) contactLink.setAttribute('aria-disabled', 'true');
+        whatsappLink.className = 'btn btn--primary';
+        whatsappLink.textContent = 'WhatsApp';
+        whatsappLink.target = '_blank';
+        whatsappLink.rel = 'noopener noreferrer';
+        const whatsapp = normalizeWhatsApp(account.whatsapp);
+        whatsappLink.href = whatsapp ? `https://wa.me/${whatsapp.replace(/^\+/, '')}?text=${encodeURIComponent('Assalamu\'alaikum, kami dari panitia PSB Pesantren Peradaban. Apakah Bapak/Ibu sudah siap melanjutkan pendaftaran?')}` : '#';
+        if (!whatsapp) whatsappLink.setAttribute('aria-disabled', 'true');
         actionCell.appendChild(contactLink);
+        actionCell.appendChild(whatsappLink);
         [nameCell, emailCell, createdCell, actionCell].forEach(cell => row.appendChild(cell));
         incompleteAccounts.appendChild(row);
       });
     }
+  }
+  function normalizeWhatsApp(value) {
+    const digits = String(value || '').replace(/\D/g, '');
+    if (digits.startsWith('0')) return `62${digits.slice(1)}`;
+    if (digits.startsWith('62')) return digits;
+    return '';
   }
   const result = await client.from('registrations').select('*').order('created_at', { ascending: false });
   if (result.error) { status.textContent = result.error.message; return; }

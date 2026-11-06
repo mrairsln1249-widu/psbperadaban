@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const user = sessionData.session.user;
   document.getElementById('portalEmail').textContent = user.email;
   document.getElementById('logout').addEventListener('click', async () => { await client.auth.signOut(); window.location.href = 'auth.html'; });
-  const profile = await client.from('profiles').select('role').eq('id', user.id).maybeSingle();
+  const profile = await client.from('profiles').select('role, whatsapp').eq('id', user.id).maybeSingle();
   if (profile.error) {
     status.textContent = `Role akun tidak dapat diperiksa: ${profile.error.message}`;
     status.className = 'portal-status is-error';
@@ -39,6 +39,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.location.href = 'admin.html';
     return;
   }
+  const portalContact = document.getElementById('portalContact');
+  const portalWhatsapp = document.getElementById('portalWhatsapp');
+  const savePortalContact = document.getElementById('savePortalContact');
+  const portalContactStatus = document.getElementById('portalContactStatus');
+  portalWhatsapp.value = profile.data.whatsapp || '';
+  portalContact.hidden = Boolean(profile.data.whatsapp);
+  savePortalContact.addEventListener('click', async () => {
+    const value = portalWhatsapp.value.trim();
+    if (!/^(?:\+62|62|0)8[1-9][0-9]{7,12}$/.test(value.replace(/[\s-]/g, ''))) {
+      portalContactStatus.textContent = 'Masukkan nomor WhatsApp aktif, misalnya 081234567890.';
+      portalContactStatus.className = 'portal-contact-status is-error';
+      portalWhatsapp.focus();
+      return;
+    }
+    savePortalContact.disabled = true;
+    const contactUpdate = await client.from('profiles').update({ whatsapp: value }).eq('id', user.id);
+    savePortalContact.disabled = false;
+    if (contactUpdate.error) {
+      portalContactStatus.textContent = `Nomor belum tersimpan: ${contactUpdate.error.message}`;
+      portalContactStatus.className = 'portal-contact-status is-error';
+      return;
+    }
+    portalContactStatus.textContent = 'Nomor WhatsApp berhasil disimpan.';
+    portalContactStatus.className = 'portal-contact-status is-success';
+    portalContact.hidden = true;
+  });
   let registration = (await client.from('registrations').select('*').eq('user_id', user.id).maybeSingle()).data;
   const form = document.getElementById('registrationForm');
   const submitVerification = document.getElementById('submitVerification');

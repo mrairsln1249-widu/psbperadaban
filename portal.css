@@ -1,5 +1,6 @@
 .portal-page { min-height: 100vh; background: #f4f7f9; }
 .portal-page :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.auth-card #phoneField:not([hidden])::after { content: "Digunakan admin hanya untuk follow-up pendaftaran."; display: block; margin-top: -10px; margin-bottom: 12px; color: var(--ink-2); font-size: 11px; font-weight: 400; }
 .auth-shell, .portal-shell { width: min(100% - 32px, 1120px); margin: 0 auto; padding: 32px 0 64px; }
 .auth-shell { max-width: 500px; }
 .portal-brand { display: inline-flex; align-items: center; gap: 12px; color: var(--primary); font-weight: 700; margin-bottom: 24px; }
@@ -33,6 +34,14 @@
 .portal-back { color: var(--primary); font-size: 13px; }
 .portal-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 28px; }
 .portal-header h1 { margin: 0; }.portal-header p { color: var(--ink-2); margin: 4px 0 0; }
+.portal-contact { max-width: 520px; margin-top: 16px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.portal-contact label { display: block; color: var(--primary); font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+.portal-contact > div { display: flex; gap: 8px; }
+.portal-contact input { min-width: 0; flex: 1; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 8px; font: inherit; }
+.portal-contact small { display: block; margin-top: 7px; color: var(--ink-2); font-size: 11px; }
+.portal-contact-status { display: block; margin-top: 8px; font-size: 12px; font-weight: 600; }
+.portal-contact-status.is-error { color: var(--danger); }
+.portal-contact-status.is-success { color: var(--success); }
 .portal-header .admin-greeting { color: var(--primary); font-size: 24px; margin: 8px 0 0; }
 .portal-grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 20px; }
 .portal-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; }.portal-form .full { grid-column: 1 / -1; }
@@ -56,6 +65,7 @@
 .table-wrap { overflow-x: auto; }.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }.data-table th, .data-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }.data-table th { color: var(--primary); background: #f8fafb; }.data-table td.detail-cell { min-width: 220px; white-space: normal; }.detail-cell details p { margin: 8px 0 0; }
 .admin-note { display: block; width: 220px; min-height: 70px; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--line-2); border-radius: 8px; font: inherit; font-size: 12px; resize: vertical; }
 .admin-action-save { margin-top: 8px; }
+.data-table .btn { margin: 2px 4px 2px 0; }
 .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eef2f6; color: var(--primary); font-size: 11px; }
 .portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }
 .portal-actions .btn { min-height: 46px; }
@@ -72,6 +82,7 @@
   .grade-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .portal-header { align-items: flex-start; flex-direction: column; }
   .portal-header .btn { width: 100%; }
+  .portal-contact > div { flex-direction: column; }
   .auth-card, .portal-card { padding: 24px 18px; }
   .portal-actions { align-items: stretch; }
   .portal-actions .btn { width: 100%; }

@@ -1,6 +1,7 @@
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null,
+  whatsapp text,
   role text not null default 'applicant' check (role in ('applicant', 'admin')),
   created_at timestamptz not null default now()
 );
@@ -59,7 +60,7 @@ as $$ select exists (select 1 from public.profiles where id = auth.uid() and rol
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public
 as $$ begin
-  insert into public.profiles (id, full_name) values (new.id, coalesce(new.raw_user_meta_data->>'full_name', 'Pendaftar'));
+  insert into public.profiles (id, full_name, whatsapp) values (new.id, coalesce(new.raw_user_meta_data->>'full_name', 'Pendaftar'), new.raw_user_meta_data->>'whatsapp');
   return new;
 end; $$;
 
@@ -72,6 +73,7 @@ alter table public.registrations enable row level security;
 alter table public.registration_documents enable row level security;
 
 create policy "Users read own profile" on public.profiles for select using (id = auth.uid() or public.is_admin());
+create policy "Applicants update own profile contact" on public.profiles for update using (id = auth.uid()) with check (id = auth.uid());
 create policy "Applicants create own registration" on public.registrations for insert with check (user_id = auth.uid());
 create policy "Applicants read own registration" on public.registrations for select using (user_id = auth.uid() or public.is_admin());
 create policy "Applicants update own draft registration" on public.registrations for update

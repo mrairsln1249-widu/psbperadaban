@@ -20,18 +20,31 @@ alter table public.registrations
 
 alter table public.registrations alter column gelombang drop not null;
 alter table public.registrations add column if not exists catatan text;
+alter table public.profiles add column if not exists whatsapp text;
+drop policy if exists "Applicants update own profile contact" on public.profiles;
+create policy "Applicants update own profile contact" on public.profiles for update
+using (id = auth.uid())
+with check (id = auth.uid());
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = public
+as $$ begin
+  insert into public.profiles (id, full_name, whatsapp)
+  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', 'Pendaftar'), new.raw_user_meta_data->>'whatsapp');
+  return new;
+end; $$;
 alter table public.registrations drop constraint if exists registrations_jenjang_check;
 alter table public.registrations
   add constraint registrations_jenjang_check
   check (jenjang in ('MTs', 'MA', 'SMP (Pesantren)', 'SMA (Full day/sekolah saja)', 'SMA (Sekolah dan Pesantren)', 'SMP', 'SMA (Boarding)', 'Kesetaraan Paket C'));
 
+drop function if exists public.admin_account_followup_report();
 create or replace function public.admin_account_followup_report()
-returns table (user_id uuid, email text, full_name text, created_at timestamptz)
+returns table (user_id uuid, email text, full_name text, whatsapp text, created_at timestamptz)
 language sql
 security definer
 set search_path = public, auth
 as $$
-  select u.id, u.email, coalesce(p.full_name, 'Pendaftar'), u.created_at
+  select u.id, u.email, coalesce(p.full_name, 'Pendaftar'), p.whatsapp, u.created_at
   from auth.users u
   left join public.profiles p on p.id = u.id
   left join public.registrations r on r.user_id = u.id

@@ -2,6 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('authForm');
   const nameField = document.getElementById('nameField');
   const fullName = document.getElementById('fullName');
+  const phoneField = document.getElementById('phoneField');
+  const phone = document.getElementById('phone');
   const emailLabel = document.getElementById('emailLabel');
   const title = document.getElementById('authTitle');
   const description = document.getElementById('authDescription');
@@ -45,6 +47,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const signup = mode === 'signup';
     nameField.hidden = !signup;
     fullName.required = signup;
+    phoneField.hidden = !signup;
+    phone.required = signup;
     title.textContent = signup ? 'Buat Akun Pendaftar' : 'Masuk ke Portal PSB';
     description.textContent = signup ? 'Gunakan email aktif untuk membuat akun pendaftaran.' : 'Pantau proses pendaftaran santri Anda melalui portal resmi.';
     emailLabel.firstChild.textContent = signup ? 'Email aktif' : 'Email';
@@ -120,6 +124,13 @@ document.addEventListener('DOMContentLoaded', () => {
     status.textContent = '';
     const email = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
+    const phoneValue = phone.value.trim();
+    if (mode === 'signup' && !/^(?:\+62|62|0)8[1-9][0-9]{7,12}$/.test(phoneValue.replace(/[\s-]/g, ''))) {
+      submit.disabled = false;
+      showAuthNotice('Nomor WhatsApp belum valid', 'Masukkan nomor WhatsApp aktif, misalnya 081234567890 atau +6281234567890.', false);
+      phone.focus();
+      return;
+    }
     let result;
     try {
       const emailRedirectTo = new URL('portal.html', window.location.href).href;
@@ -129,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
             password,
             options: {
               emailRedirectTo,
-              data: { full_name: fullName.value.trim() }
+              data: { full_name: fullName.value.trim(), whatsapp: phoneValue }
             }
           })
         : await window.supabaseClient.auth.signInWithPassword({ email, password });
