@@ -66,6 +66,12 @@
 .admin-note { display: block; width: 220px; min-height: 70px; margin-top: 8px; padding: 8px 10px; border: 1px solid var(--line-2); border-radius: 8px; font: inherit; font-size: 12px; resize: vertical; }
 .admin-action-save { margin-top: 8px; }
 .data-table .btn { margin: 2px 4px 2px 0; }
+.documents-cell { min-width: 260px; white-space: normal !important; }
+.documents-cell.is-error { color: var(--danger); }
+.admin-document-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.admin-document-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
+.admin-document-list li > span { overflow-wrap: anywhere; font-size: 12px; }
+.admin-document-link { padding: 7px 10px; font-size: 11px; }
 .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eef2f6; color: var(--primary); font-size: 11px; }
 .portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }
 .portal-actions .btn { min-height: 46px; }

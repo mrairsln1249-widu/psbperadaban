@@ -82,6 +82,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const jenjangCell = document.createElement('td');
     const waliCell = document.createElement('td');
     const detailsCell = document.createElement('td');
+    const documentsCell = document.createElement('td');
+    documentsCell.className = 'documents-cell';
     detailsCell.className = 'detail-cell';
     const statusCell = document.createElement('td');
     const actionCell = document.createElement('td');
@@ -146,7 +148,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     actionCell.appendChild(select);
     actionCell.appendChild(note);
     actionCell.appendChild(saveAction);
-    [numberCell, nameCell, jenjangCell, waliCell, detailsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
+    documentsCell.textContent = 'Memuat...';
+    [numberCell, nameCell, jenjangCell, waliCell, detailsCell, documentsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
     saveAction.addEventListener('click', async () => {
       if (select.value === 'perlu_perbaikan' && !note.value.trim()) {
         status.textContent = 'Tambahkan catatan perbaikan sebelum menyimpan status tersebut.';
@@ -166,5 +169,66 @@ document.addEventListener('DOMContentLoaded', async () => {
       saveAction.disabled = false;
     });
     tbody.appendChild(row);
+    loadRegistrationDocuments(registration.id, documentsCell);
   });
+
+  async function loadRegistrationDocuments(registrationId, cell) {
+    const result = await client
+      .from('registration_documents')
+      .select('document_type, file_path, original_name, created_at')
+      .eq('registration_id', registrationId)
+      .order('created_at', { ascending: true });
+    cell.replaceChildren();
+    if (result.error) {
+      cell.textContent = 'Gagal memuat dokumen.';
+      cell.classList.add('is-error');
+      return;
+    }
+    if (!result.data.length) {
+      cell.textContent = 'Belum ada dokumen.';
+      return;
+    }
+    const list = document.createElement('ul');
+    list.className = 'admin-document-list';
+    result.data.forEach(documentRecord => {
+      const item = document.createElement('li');
+      const label = document.createElement('span');
+      label.textContent = `${documentTypeLabel(documentRecord.document_type)}: ${documentRecord.original_name}`;
+      const link = document.createElement('a');
+      link.className = 'btn btn--ghost admin-document-link';
+      link.textContent = 'Lihat';
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.setAttribute('aria-label', `Lihat ${documentRecord.original_name}`);
+      link.textContent = 'Buka';
+      link.addEventListener('click', async event => {
+        event.preventDefault();
+        link.textContent = 'Membuka...';
+        const signed = await client.storage.from('registration-documents').createSignedUrl(documentRecord.file_path, 3600);
+        if (signed.error) {
+          link.textContent = 'Gagal';
+          status.textContent = `Dokumen gagal dibuka: ${signed.error.message}`;
+          status.className = 'portal-status is-error';
+          return;
+        }
+        window.open(signed.data.signedUrl, '_blank', 'noopener,noreferrer');
+        link.textContent = 'Buka';
+      });
+      item.appendChild(label);
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    cell.appendChild(list);
+  }
+
+  function documentTypeLabel(type) {
+    return {
+      foto_bersama: 'Foto bersama',
+      pas_foto: 'Pas foto',
+      kartu_keluarga: 'Kartu Keluarga',
+      ktp_ayah: 'KTP Ayah',
+      ktp_ibu: 'KTP Ibu',
+      akta_kelahiran: 'Akta kelahiran'
+    }[type] || type;
+  }
 });
