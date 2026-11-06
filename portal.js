@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function renderStatus() {
     const steps = [
-      ['draft', 'Draft'], ['menunggu_verifikasi', 'Verifikasi'], ['menunggu_pembayaran', 'Pembayaran'],
+      ['draft', 'Draft'], ['menunggu_verifikasi', 'Verifikasi'],
       ['siap_ujian', 'Ujian'], ['lulus', 'Pengumuman']
     ];
     const statusStage = {
@@ -199,12 +199,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       menunggu_pembayaran: 2,
       pembayaran_diperiksa: 2,
       pembayaran_lunas: 2,
-      siap_ujian: 3,
-      sudah_ujian: 3,
-      lulus: 4,
-      tidak_lulus: 4,
-      cadangan: 4,
-      daftar_ulang_selesai: 4,
+      siap_ujian: 2,
+      sudah_ujian: 2,
+      lulus: 3,
+      tidak_lulus: 3,
+      cadangan: 3,
+      daftar_ulang_selesai: 3,
       ditolak: 1
     };
     const currentIndex = statusStage[registration.status] ?? 0;
