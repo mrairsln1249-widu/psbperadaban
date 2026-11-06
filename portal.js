@@ -69,6 +69,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const form = document.getElementById('registrationForm');
   const submitVerification = document.getElementById('submitVerification');
   const saveRegistration = document.getElementById('saveRegistration');
+  const registrationLockNotice = document.getElementById('registrationLockNotice');
+  const documentHelpText = document.getElementById('documentHelpText');
+  const editableStatuses = ['draft', 'perlu_perbaikan'];
+  function applyRegistrationAccess() {
+    const editable = Boolean(registration && editableStatuses.includes(registration.status));
+    form.querySelectorAll('input, select, textarea, button').forEach(control => { control.disabled = !editable; });
+    saveRegistration.hidden = !editable;
+    submitVerification.hidden = !editable;
+    registrationLockNotice.hidden = editable || !registration;
+    registrationLockNotice.textContent = registration && registration.status === 'terverifikasi'
+      ? 'Pendaftaran sudah terverifikasi. Data dan dokumen dapat dilihat sebagai arsip, tetapi tidak dapat diubah.'
+      : 'Pendaftaran sedang diproses. Data dan dokumen dikunci sampai admin memberikan instruksi perbaikan.';
+    documentHelpText.textContent = editable
+      ? 'Pastikan setiap dokumen terbaca dan sesuai ketentuan sebelum dikirim untuk verifikasi.'
+      : 'Dokumen tersimpan sebagai arsip. Upload ulang tidak tersedia selama pendaftaran sedang diproses.';
+  }
   if (registration) {
     Object.entries(registration).forEach(([key, value]) => { if (form.elements[key]) form.elements[key].value = value ?? ''; });
     const birthInfo = splitBirthInfo(registration.ttl || '');
@@ -262,6 +278,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     revisionNote.textContent = registration.status === 'perlu_perbaikan' && registration.catatan
       ? `Catatan perbaikan dari admin: ${registration.catatan}`
       : '';
+    applyRegistrationAccess();
   }
 
   function renderDocuments() {
@@ -281,6 +298,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       row.className = 'document-row';
       row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}"><small>${helpText ? `${helpText} ` : ''}Format: ${formatAcceptedTypes(accept)}. Batas gambar 1 MB, PDF 1,5 MB. Upload ulang akan menggantikan file lama.</small><span class="document-status" role="status" aria-live="polite"></span>`;
       const input = row.querySelector('input');
+      input.disabled = !editableStatuses.includes(registration.status);
       input.addEventListener('change', event => uploadDocument(input, type, accept, row.querySelector('.document-status')));
       container.appendChild(row);
     });
@@ -290,7 +308,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   async function uploadDocument(input, type, accept, documentStatus) {
     const files = Array.from(input.files || []);
-    if (!files.length || !registration) return;
+    if (!files.length || !registration || !editableStatuses.includes(registration.status)) return;
     const setDocumentStatus = (message, kind) => {
       documentStatus.textContent = message;
       documentStatus.className = `document-status is-${kind}`;
@@ -407,9 +425,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (registration) {
     renderStatus();
     renderDocuments();
-    const locked = !['draft', 'perlu_perbaikan'].includes(registration.status);
-    saveRegistration.disabled = locked;
-    submitVerification.disabled = locked;
     client.channel(`registration-status-${registration.id}`)
       .on('postgres_changes', {
         event: 'UPDATE',
@@ -419,8 +434,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       }, payload => {
         registration = { ...registration, ...payload.new };
         renderStatus();
-        if (registration.status === 'perlu_perbaikan') renderDocuments();
+        renderDocuments();
       })
       .subscribe();
+  } else {
+    applyRegistrationAccess();
   }
 });
