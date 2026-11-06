@@ -24,6 +24,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('adminGreeting').textContent = `Assalamu'alaikum, ${adminName}!`;
   document.getElementById('adminEmail').textContent = user.email || '';
   document.getElementById('logout').addEventListener('click', async () => { await client.auth.signOut(); window.location.href = 'auth.html'; });
+  const followUpStatus = document.getElementById('followUpStatus');
+  const followUpResult = await client.rpc('admin_account_followup_report');
+  if (followUpResult.error) {
+    followUpStatus.textContent = `Laporan akun belum lengkap belum tersedia: ${followUpResult.error.message}. Jalankan migration terbaru di Supabase.`;
+    followUpStatus.className = 'portal-status is-error';
+  } else {
+    const incompleteAccounts = document.getElementById('incompleteAccounts');
+    if (!followUpResult.data.length) {
+      followUpStatus.textContent = 'Tidak ada akun yang perlu di-follow-up.';
+      followUpStatus.className = 'portal-status is-success';
+    } else {
+      followUpStatus.textContent = `${followUpResult.data.length} akun belum melengkapi formulir.`;
+      followUpStatus.className = 'portal-status is-pending';
+      followUpResult.data.forEach(account => {
+        const row = document.createElement('tr');
+        const nameCell = document.createElement('td');
+        const emailCell = document.createElement('td');
+        const createdCell = document.createElement('td');
+        const actionCell = document.createElement('td');
+        const contactLink = document.createElement('a');
+        nameCell.textContent = account.full_name || 'Pendaftar';
+        emailCell.textContent = account.email || '-';
+        createdCell.textContent = new Date(account.created_at).toLocaleDateString('id-ID');
+        contactLink.className = 'btn btn--ghost';
+        contactLink.href = account.email ? `mailto:${account.email}` : '#';
+        contactLink.textContent = 'Hubungi via Email';
+        if (!account.email) contactLink.setAttribute('aria-disabled', 'true');
+        actionCell.appendChild(contactLink);
+        [nameCell, emailCell, createdCell, actionCell].forEach(cell => row.appendChild(cell));
+        incompleteAccounts.appendChild(row);
+      });
+    }
+  }
   const result = await client.from('registrations').select('*').order('created_at', { ascending: false });
   if (result.error) { status.textContent = result.error.message; return; }
   const tbody = document.getElementById('registrations');
@@ -86,13 +119,36 @@ document.addEventListener('DOMContentLoaded', async () => {
       select.appendChild(option);
     });
     select.value = registration.status;
+    const note = document.createElement('textarea');
+    note.className = 'admin-note';
+    note.placeholder = 'Catatan untuk pendaftar jika perlu perbaikan...';
+    note.value = registration.catatan || '';
+    note.setAttribute('aria-label', `Catatan untuk ${registration.nama || 'pendaftar'}`);
+    const saveAction = document.createElement('button');
+    saveAction.type = 'button';
+    saveAction.className = 'btn btn--ghost admin-action-save';
+    saveAction.textContent = 'Simpan status';
     actionCell.appendChild(select);
+    actionCell.appendChild(note);
+    actionCell.appendChild(saveAction);
     [numberCell, nameCell, jenjangCell, waliCell, detailsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
-    select.addEventListener('change', async () => {
-      const update = await client.from('registrations').update({ status: select.value, updated_at: new Date().toISOString() }).eq('id', registration.id);
+    saveAction.addEventListener('click', async () => {
+      if (select.value === 'perlu_perbaikan' && !note.value.trim()) {
+        status.textContent = 'Tambahkan catatan perbaikan sebelum menyimpan status tersebut.';
+        status.className = 'portal-status is-error';
+        note.focus();
+        return;
+      }
+      saveAction.disabled = true;
+      const update = await client.from('registrations').update({ status: select.value, catatan: note.value.trim() || null, updated_at: new Date().toISOString() }).eq('id', registration.id);
       status.textContent = update.error ? update.error.message : 'Status pendaftar berhasil diperbarui.';
       status.className = update.error ? 'portal-status is-error' : 'portal-status is-success';
-      if (!update.error) badge.textContent = select.value;
+      if (!update.error) {
+        badge.textContent = select.value;
+        registration.status = select.value;
+        registration.catatan = note.value.trim();
+      }
+      saveAction.disabled = false;
     });
     tbody.appendChild(row);
   });

@@ -212,6 +212,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       const state = index < currentIndex ? 'is-done' : index === currentIndex ? 'is-current' : '';
       return `<span class="status-step ${state}">${step[1]}</span>`;
     }).join('');
+    const revisionNote = document.getElementById('revisionNote');
+    revisionNote.hidden = registration.status !== 'perlu_perbaikan' || !registration.catatan;
+    revisionNote.textContent = registration.status === 'perlu_perbaikan' && registration.catatan
+      ? `Catatan perbaikan dari admin: ${registration.catatan}`
+      : '';
   }
 
   function renderDocuments() {

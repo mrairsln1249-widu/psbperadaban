@@ -19,10 +19,29 @@ alter table public.registrations
   add column if not exists pernyataan_setuju boolean;
 
 alter table public.registrations alter column gelombang drop not null;
+alter table public.registrations add column if not exists catatan text;
 alter table public.registrations drop constraint if exists registrations_jenjang_check;
 alter table public.registrations
   add constraint registrations_jenjang_check
   check (jenjang in ('MTs', 'MA', 'SMP (Pesantren)', 'SMA (Full day/sekolah saja)', 'SMA (Sekolah dan Pesantren)', 'SMP', 'SMA (Boarding)', 'Kesetaraan Paket C'));
+
+create or replace function public.admin_account_followup_report()
+returns table (user_id uuid, email text, full_name text, created_at timestamptz)
+language sql
+security definer
+set search_path = public, auth
+as $$
+  select u.id, u.email, coalesce(p.full_name, 'Pendaftar'), u.created_at
+  from auth.users u
+  left join public.profiles p on p.id = u.id
+  left join public.registrations r on r.user_id = u.id
+  where public.is_admin()
+    and coalesce(p.role, 'applicant') = 'applicant'
+    and r.id is null
+  order by u.created_at desc;
+$$;
+revoke all on function public.admin_account_followup_report() from public;
+grant execute on function public.admin_account_followup_report() to authenticated;
 alter table public.registrations drop constraint if exists registrations_jenis_kelamin_check;
 alter table public.registrations
   add constraint registrations_jenis_kelamin_check
