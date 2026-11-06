@@ -833,10 +833,10 @@ h1, h2, h3, h4 {
   margin-bottom: 18px;
 }
 .wave__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 18px;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  align-items: start;
+  column-gap: 24px;
   min-width: 0;
   padding: 14px 0;
   border-top: 1px solid var(--line);
@@ -844,12 +844,10 @@ h1, h2, h3, h4 {
   line-height: 1.5;
 }
 .wave__row span {
-  flex: 0 0 38%;
   color: #7487a1;
 }
 .wave__row strong {
   min-width: 0;
-  flex: 1 1 auto;
   color: var(--primary);
   font-weight: 600;
   text-align: right;
@@ -874,6 +872,15 @@ h1, h2, h3, h4 {
   background: rgba(226, 168, 44, 0.15);
   color: var(--accent-2);
   letter-spacing: 0.02em;
+}
+
+#jadwal .wave {
+  min-height: 392px;
+}
+
+#syarat .wave,
+#biaya .wave {
+  height: 100%;
 }
 
 /* ============================================================
@@ -1492,6 +1499,7 @@ h1, h2, h3, h4 {
   .hero__card { max-width: 480px; }
   .grid--4 { grid-template-columns: repeat(2, 1fr); }
   .grid--3 { grid-template-columns: 1fr; }
+  #jadwal .wave { min-height: 0; }
   .footer__inner { grid-template-columns: repeat(2, 1fr); }
 
   .nav__links { display: none; }
