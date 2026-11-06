@@ -72,25 +72,36 @@ alter table public.profiles enable row level security;
 alter table public.registrations enable row level security;
 alter table public.registration_documents enable row level security;
 
+drop policy if exists "Users read own profile" on public.profiles;
 create policy "Users read own profile" on public.profiles for select using (id = auth.uid() or public.is_admin());
+drop policy if exists "Applicants update own profile contact" on public.profiles;
 create policy "Applicants update own profile contact" on public.profiles for update using (id = auth.uid()) with check (id = auth.uid());
+drop policy if exists "Applicants create own registration" on public.registrations;
 create policy "Applicants create own registration" on public.registrations for insert with check (user_id = auth.uid());
+drop policy if exists "Applicants read own registration" on public.registrations;
 create policy "Applicants read own registration" on public.registrations for select using (user_id = auth.uid() or public.is_admin());
+drop policy if exists "Applicants update own draft registration" on public.registrations;
 create policy "Applicants update own draft registration" on public.registrations for update
 using (user_id = auth.uid() and status in ('draft', 'perlu_perbaikan'))
 with check (user_id = auth.uid() and status in ('draft', 'perlu_perbaikan', 'menunggu_verifikasi'));
+drop policy if exists "Admins update registrations" on public.registrations;
 create policy "Admins update registrations" on public.registrations for update using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "Applicants manage own documents" on public.registration_documents;
 create policy "Applicants manage own documents" on public.registration_documents for all using (user_id = auth.uid() or public.is_admin()) with check (user_id = auth.uid() or public.is_admin());
 
 insert into storage.buckets (id, name, public, file_size_limit) values ('registration-documents', 'registration-documents', false, 1572864)
 on conflict (id) do update set file_size_limit = excluded.file_size_limit;
 
+drop policy if exists "Applicants upload own documents" on storage.objects;
 create policy "Applicants upload own documents" on storage.objects for insert
 with check (bucket_id = 'registration-documents' and auth.uid()::text = (storage.foldername(name))[1]);
+drop policy if exists "Applicants read own documents" on storage.objects;
 create policy "Applicants read own documents" on storage.objects for select
 using (bucket_id = 'registration-documents' and (auth.uid()::text = (storage.foldername(name))[1] or public.is_admin()));
+drop policy if exists "Applicants update own documents" on storage.objects;
 create policy "Applicants update own documents" on storage.objects for update
 using (bucket_id = 'registration-documents' and auth.uid()::text = (storage.foldername(name))[1])
 with check (bucket_id = 'registration-documents' and auth.uid()::text = (storage.foldername(name))[1]);
+drop policy if exists "Applicants delete own documents" on storage.objects;
 create policy "Applicants delete own documents" on storage.objects for delete
 using (bucket_id = 'registration-documents' and auth.uid()::text = (storage.foldername(name))[1]);
