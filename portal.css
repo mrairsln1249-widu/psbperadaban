@@ -1,4 +1,5 @@
 .portal-page { min-height: 100vh; background: #f4f7f9; }
+.portal-page :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .auth-shell, .portal-shell { width: min(100% - 32px, 1120px); margin: 0 auto; padding: 32px 0 64px; }
 .auth-shell { max-width: 500px; }
 .portal-brand { display: inline-flex; align-items: center; gap: 12px; color: var(--primary); font-weight: 700; margin-bottom: 24px; }
@@ -34,7 +35,7 @@
 .portal-header h1 { margin: 0; }.portal-header p { color: var(--ink-2); margin: 4px 0 0; }
 .portal-header .admin-greeting { color: var(--primary); font-size: 24px; margin: 8px 0 0; }
 .portal-grid { display: grid; grid-template-columns: 1.4fr .8fr; gap: 20px; }
-.portal-form { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }.portal-form .full { grid-column: 1 / -1; }
+.portal-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 16px; }.portal-form .full { grid-column: 1 / -1; }
 .portal-form .choice-group { min-width: 0; border: 0; margin: 0 0 16px; padding: 0; }
 .portal-form .choice-group legend { color: var(--primary); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 .portal-form .choice-option { display: inline-flex; align-items: center; gap: 8px; margin: 8px 18px 0 0; color: var(--ink-2); font-weight: 400; }
@@ -49,5 +50,21 @@
 .table-wrap { overflow-x: auto; }.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }.data-table th, .data-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }.data-table th { color: var(--primary); background: #f8fafb; }.data-table td.detail-cell { min-width: 220px; white-space: normal; }.detail-cell details p { margin: 8px 0 0; }
 .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eef2f6; color: var(--primary); font-size: 11px; }
 .portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }
+.portal-actions .btn { min-height: 46px; }
 .status-stepper { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 22px; }.status-step { padding: 7px 10px; border-radius: 8px; background: #eef2f6; color: var(--ink-2); font-size: 11px; }.status-step.is-current { background: var(--accent); color: var(--primary); font-weight: 700; }.status-step.is-done { background: #d7f5e8; color: #087443; }
-@media (max-width: 760px) { .portal-grid, .portal-form { grid-template-columns: 1fr; }.portal-form .full { grid-column: auto; }.grade-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }.portal-header { align-items: flex-start; flex-direction: column; }.auth-card, .portal-card { padding: 24px; } }
+@media (max-width: 900px) {
+  .portal-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .portal-shell { width: min(100% - 24px, 640px); padding-top: 20px; }
+  .portal-grid, .portal-form { grid-template-columns: 1fr; }
+  .portal-form .full { grid-column: auto; }
+  .grade-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .portal-header { align-items: flex-start; flex-direction: column; }
+  .portal-header .btn { width: 100%; }
+  .auth-card, .portal-card { padding: 24px 18px; }
+  .portal-actions { align-items: stretch; }
+  .portal-actions .btn { width: 100%; }
+  .status-stepper { gap: 8px; }
+  .status-step { flex: 1 1 calc(50% - 8px); text-align: center; }
+}

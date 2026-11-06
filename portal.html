@@ -3,15 +3,15 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Portal Pendaftar — PSB</title><link rel="icon" type="image/jpeg" href="faviconpp.jpg"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="portal.css"></head>
 <body class="portal-page">
   <main class="portal-shell">
-    <header class="portal-header"><div><a class="portal-brand" href="index.html"><img src="logopp.png" alt="Logo Pesantren Peradaban"><span>Portal Pendaftar</span></a><h1>Lengkapi Pendaftaran</h1><p id="portalEmail"></p></div><button class="btn btn--ghost" id="logout">Keluar</button></header>
+    <header class="portal-header"><div><a class="portal-brand" href="index.html"><img src="logopp.png" alt="Logo Pesantren Peradaban"><span>Portal Pendaftar</span></a><h1>Lengkapi Pendaftaran</h1><p id="portalEmail" aria-live="polite"></p></div><button class="btn btn--ghost" id="logout" type="button">Keluar</button></header>
     <div class="portal-grid">
-      <section class="portal-card"><h2>Data Pendaftar</h2><div class="status-stepper" id="statusStepper"></div><form class="portal-form" id="registrationForm" novalidate>
+      <section class="portal-card"><h2>Data Pendaftar</h2><div class="status-stepper" id="statusStepper" role="status" aria-live="polite" aria-label="Status pendaftaran"></div><form class="portal-form" id="registrationForm" novalidate>
         <label>Nama Lengkap Calon Siswa/Santri *<input name="nama" required></label>
         <label>Tempat Lahir *<input name="tempat_lahir" autocomplete="address-level2" required></label>
         <label>Tanggal Lahir *<input name="tanggal_lahir" type="date" autocomplete="bday" required></label>
         <fieldset class="full choice-group"><legend>Jenis Kelamin *</legend><label class="choice-option"><input name="jenis_kelamin" type="radio" value="Laki-laki" required> Laki-laki</label><label class="choice-option"><input name="jenis_kelamin" type="radio" value="Perempuan" required> Perempuan</label></fieldset>
         <label>Asal Sekolah *<input name="asal_sekolah" required></label>
-        <label>Jenjang dan program yg akan diambil *
+        <label>Jenjang dan program yang akan diambil *
           <select name="jenjang" required>
             <option value="">Pilih jenjang dan program</option>
             <option>SMP (Pesantren)</option>
@@ -37,7 +37,7 @@
             <label>Semester 5<input name="nilai_rapor_semester_5" type="number" min="0" max="100" step="0.01" required></label>
           </div>
         </fieldset>
-        <div class="full payment-note"><strong>Informasi infaq pendaftaran</strong><p>Pendaftaran dikenakan infaq Rp150.000 ke No. Rek. BSI 7218572957 a/n Pesantren Peradaban Assalam (gratis untuk gelombang 1).</p></div>
+        <div class="full payment-note" role="note"><strong>Pendaftaran gratis</strong><p>Formulir dan administrasi awal tidak dipungut biaya. Informasi biaya pendidikan ditetapkan berdasarkan golongan subsidi silang dan disampaikan pada tahap berikutnya.</p></div>
         <fieldset class="full choice-group"><legend>Dengan ini saya menyatakan dengan sesungguhnya bahwa semua informasi yang disampaikan dalam seluruh dokumen serta lampiran-lampirannya ini adalah benar dan kesatuan yang tidak dapat dipisahkan. Apabila diketemukan dan/atau dibuktikan adanya penipuan/pemalsuan atas informasi yang saya sampaikan, maka saya bersedia dikenakan dan menerima penerapan sanksi. *</legend><label class="choice-option"><input name="pernyataan_setuju" type="radio" value="true" required> Setuju</label><label class="choice-option"><input name="pernyataan_setuju" type="radio" value="false" required> Tidak setuju</label></fieldset>
         <div class="full portal-actions"><button class="btn btn--ghost" type="submit" id="saveRegistration">Simpan Draft</button><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><div class="portal-status" id="registrationStatus" role="alert" aria-live="assertive" hidden></div></div>
       </form></section>

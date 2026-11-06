@@ -32,7 +32,7 @@
         </span>
       </a>
 
-      <nav class="nav__links">
+      <nav class="nav__links" aria-label="Navigasi utama">
         <a href="#program">Program</a>
         <a href="#alur">Alur</a>
         <a href="#jadwal">Jadwal</a>
@@ -603,7 +603,7 @@
     </div>
 
     <div class="chat-footer">
-      <input type="text" id="chatInput" placeholder="Ketik pertanyaan lain..." onkeypress="handleKeyPress(event)" />
+      <input type="text" id="chatInput" aria-label="Pertanyaan untuk Asisten PSB" placeholder="Ketik pertanyaan lain..." onkeypress="handleKeyPress(event)" />
       <button onclick="sendToWA()" aria-label="Kirim ke WhatsApp">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
       </button>
