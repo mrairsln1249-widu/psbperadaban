@@ -101,5 +101,5 @@ using (bucket_id = 'registration-documents' and auth.uid()::text = (storage.fold
 with check (bucket_id = 'registration-documents' and auth.uid()::text = (storage.foldername(name))[1]);
 
 update storage.buckets
-set file_size_limit = 2097152
+set file_size_limit = 1572864
 where id = 'registration-documents';

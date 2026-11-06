@@ -248,28 +248,28 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderDocuments() {
     if (!registration) return;
     const types = [
-      ['foto_bersama', 'Foto Calon Santri bersama Orang Tua/Wali *', true, 'image/*', 2, false, 'Foto calon santri bersama orang tua/wali.'],
-      ['pas_foto', 'Foto warna 3x4 latar merah *', true, 'image/*', 2, false, ''],
-      ['kartu_keluarga', 'Scan Kartu Keluarga *', true, 'application/pdf,image/*', 2, false, ''],
-      ['ktp_ayah', 'Scan KTP Ayah *', true, 'application/pdf,image/*', 2, true, 'Maksimal 5 file.'],
-      ['ktp_ibu', 'Scan KTP Ibu *', true, 'application/pdf,image/*', 2, false, ''],
-      ['akta_kelahiran', 'Scan Akte Lahir *', true, 'application/pdf,image/*', 2, false, '']
+      ['foto_bersama', 'Foto Calon Santri bersama Orang Tua/Wali *', true, 'image/*', 'Foto calon santri bersama orang tua/wali.'],
+      ['pas_foto', 'Foto warna 3x4 latar merah *', true, 'image/*', ''],
+      ['kartu_keluarga', 'Scan Kartu Keluarga *', true, 'application/pdf,image/*', ''],
+      ['ktp_ayah', 'Scan KTP Ayah *', true, 'application/pdf,image/*', 'Maksimal 1 file.'],
+      ['ktp_ibu', 'Scan KTP Ibu *', true, 'application/pdf,image/*', ''],
+      ['akta_kelahiran', 'Scan Akte Lahir *', true, 'application/pdf,image/*', '']
     ];
     const container = document.getElementById('documents');
     container.innerHTML = '';
-    types.forEach(([type, label, required, accept, maxSizeMb, multiple, helpText]) => {
+    types.forEach(([type, label, required, accept, helpText]) => {
       const row = document.createElement('label');
       row.className = 'document-row';
-      row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}" ${multiple ? 'multiple' : ''}><small>${helpText ? `${helpText} ` : ''}Format: ${formatAcceptedTypes(accept)}. Maksimal ${maxSizeMb} MB per file${multiple ? '; maksimal 5 file.' : '.'}</small><span class="document-status" role="status" aria-live="polite"></span>`;
+      row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}"><small>${helpText ? `${helpText} ` : ''}Format: ${formatAcceptedTypes(accept)}. Batas gambar 1 MB, PDF 1,5 MB. Upload ulang akan menggantikan file lama.</small><span class="document-status" role="status" aria-live="polite"></span>`;
       const input = row.querySelector('input');
-      input.addEventListener('change', event => uploadDocument(input, type, maxSizeMb, multiple, accept, row.querySelector('.document-status')));
+      input.addEventListener('change', event => uploadDocument(input, type, accept, row.querySelector('.document-status')));
       container.appendChild(row);
     });
   }
   function formatAcceptedTypes(accept) {
     return accept.split(',').map(type => type === 'image/*' ? 'JPG, PNG, atau gambar' : 'PDF').join(' atau ');
   }
-  async function uploadDocument(input, type, maxSizeMb, multiple, accept, documentStatus) {
+  async function uploadDocument(input, type, accept, documentStatus) {
     const files = Array.from(input.files || []);
     if (!files.length || !registration) return;
     const setDocumentStatus = (message, kind) => {
@@ -282,47 +282,105 @@ document.addEventListener('DOMContentLoaded', async () => {
       setDocumentStatus(`Gagal: format tidak sesuai. Gunakan ${formatAcceptedTypes(accept)}.`, 'error');
       return;
     }
-    if (files.some(file => file.size > maxSizeMb * 1024 * 1024)) {
+    if (files.length > 1) {
       input.value = '';
-      setDocumentStatus(`Gagal: ukuran file melebihi ${maxSizeMb} MB.`, 'error');
-      return;
-    }
-    if (multiple && files.length > 5) {
-      input.value = '';
-      setDocumentStatus('Gagal: KTP Ayah maksimal 5 file.', 'error');
+      setDocumentStatus('Gagal: satu dokumen hanya boleh memiliki satu file.', 'error');
       return;
     }
     setDocumentStatus('Sedang mengunggah...', 'pending');
-    const existing = multiple
-      ? await client.from('registration_documents').select('file_path').eq('registration_id', registration.id).eq('document_type', type)
-      : { data: [], error: null };
+    let preparedFile;
+    try {
+      preparedFile = await prepareUploadFile(files[0]);
+    } catch (error) {
+      input.value = '';
+      setDocumentStatus(`Gagal menyiapkan file: ${error.message}`, 'error');
+      return;
+    }
+    const existing = await client.from('registration_documents').select('file_path').eq('registration_id', registration.id).eq('document_type', type);
     if (existing.error) {
       setDocumentStatus(`Gagal: ${existing.error.message}`, 'error');
       return;
     }
-    const paths = files.map(file => getDocumentPath(type, file));
-    if (multiple && new Set([...(existing.data || []).map(document => document.file_path), ...paths]).size > 5) {
-      input.value = '';
-      setDocumentStatus('Gagal: jumlah file KTP Ayah maksimal 5.', 'error');
+    const path = getDocumentPath(type, preparedFile);
+    const upload = await client.storage.from('registration-documents').upload(path, preparedFile, { upsert: true, contentType: preparedFile.type });
+    if (upload.error) {
+      setDocumentStatus(`Gagal mengunggah: ${upload.error.message}`, 'error');
       return;
     }
-    for (const [index, file] of files.entries()) {
-      const path = paths[index];
-      const upload = await client.storage.from('registration-documents').upload(path, file, { upsert: true });
-      if (upload.error) {
-        setDocumentStatus(`Gagal mengunggah: ${upload.error.message}`, 'error');
+    const oldPaths = (existing.data || []).map(document => document.file_path).filter(oldPath => oldPath !== path);
+    if (oldPaths.length) {
+      const removed = await client.storage.from('registration-documents').remove(oldPaths);
+      if (removed.error) {
+        setDocumentStatus(`File baru berhasil diunggah, tetapi file lama belum terhapus: ${removed.error.message}`, 'error');
         return;
       }
-      const saved = await client.from('registration_documents').upsert(
-        { registration_id: registration.id, user_id: user.id, document_type: type, file_path: path, original_name: file.name },
-        { onConflict: 'registration_id,document_type,file_path' }
-      );
-      if (saved.error) {
-        setDocumentStatus(`Gagal menyimpan data file: ${saved.error.message}`, 'error');
+      const deleted = await client.from('registration_documents').delete().eq('registration_id', registration.id).eq('document_type', type);
+      if (deleted.error) {
+        setDocumentStatus(`File baru berhasil diunggah, tetapi data file lama belum terhapus: ${deleted.error.message}`, 'error');
         return;
       }
     }
-    setDocumentStatus(`${files.length} file berhasil diunggah.`, 'success');
+    const saved = await client.from('registration_documents').upsert(
+      { registration_id: registration.id, user_id: user.id, document_type: type, file_path: path, original_name: files[0].name },
+      { onConflict: 'registration_id,document_type,file_path' }
+    );
+    if (saved.error) {
+      setDocumentStatus(`Gagal menyimpan data file: ${saved.error.message}`, 'error');
+      return;
+    }
+    setDocumentStatus(`Berhasil diunggah: ${formatBytes(preparedFile.size)}.`, 'success');
+  }
+  async function prepareUploadFile(file) {
+    if (file.type === 'application/pdf') {
+      if (file.size > 1.5 * 1024 * 1024) throw new Error('PDF maksimal 1,5 MB.');
+      return file;
+    }
+    if (!file.type.startsWith('image/')) throw new Error('Gunakan file PDF atau gambar.');
+    return compressImage(file, 1024 * 1024);
+  }
+  function compressImage(file, maxBytes) {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      const objectUrl = URL.createObjectURL(file);
+      image.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        const canvas = document.createElement('canvas');
+        const scale = Math.min(1, 1800 / Math.max(image.naturalWidth, image.naturalHeight));
+        canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+        canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        const attempt = (quality, width, height) => {
+          canvas.width = width;
+          canvas.height = height;
+          context.drawImage(image, 0, 0, width, height);
+          canvas.toBlob(blob => {
+            if (!blob) {
+              reject(new Error('Gambar tidak dapat diproses.'));
+              return;
+            }
+            if (blob.size <= maxBytes || quality <= 0.55) {
+              if (blob.size > maxBytes) {
+                reject(new Error('Gambar tetap melebihi 1 MB setelah dikompres.'));
+                return;
+              }
+              resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.jpg'), { type: 'image/jpeg' }));
+              return;
+            }
+            attempt(quality - 0.1, Math.round(width * 0.85), Math.round(height * 0.85));
+          }, 'image/jpeg', quality);
+        };
+        attempt(0.82, canvas.width, canvas.height);
+      };
+      image.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error('Gambar tidak dapat dibaca.'));
+      };
+      image.src = objectUrl;
+    });
+  }
+  function formatBytes(bytes) {
+    return `${(bytes / 1024).toFixed(0)} KB`;
   }
   function getDocumentPath(type, file) {
     return `${user.id}/${registration.id}/${type}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`;

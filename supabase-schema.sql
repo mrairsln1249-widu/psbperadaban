@@ -82,7 +82,7 @@ with check (user_id = auth.uid() and status in ('draft', 'perlu_perbaikan', 'men
 create policy "Admins update registrations" on public.registrations for update using (public.is_admin()) with check (public.is_admin());
 create policy "Applicants manage own documents" on public.registration_documents for all using (user_id = auth.uid() or public.is_admin()) with check (user_id = auth.uid() or public.is_admin());
 
-insert into storage.buckets (id, name, public, file_size_limit) values ('registration-documents', 'registration-documents', false, 2097152)
+insert into storage.buckets (id, name, public, file_size_limit) values ('registration-documents', 'registration-documents', false, 1572864)
 on conflict (id) do update set file_size_limit = excluded.file_size_limit;
 
 create policy "Applicants upload own documents" on storage.objects for insert
