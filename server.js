@@ -24,7 +24,7 @@ const registrationFields = [
   'alamat',
 ];
 
-const allowedJenjang = new Set(['MTs', 'MA']);
+const allowedJenjang = new Set(['SMP', 'SMA', 'MTs', 'MA']);
 const allowedGelombang = new Set([
   'Gelombang 1 (Diskon 30%)',
   'Gelombang 2',
@@ -75,13 +75,13 @@ function validateRegistration(body) {
 
 const chatbotAnswers = {
   biaya:
-    'Biaya pendaftaran <b>Gelombang 1: Rp 350.000</b>.<br><br>Rincian biaya pendidikan: Rp 6.500.000/tahun.<br>Biaya asrama: Rp 4.800.000/tahun.<br><br>Tersedia beasiswa hingga 100% untuk santri berprestasi dan yatim.',
+    'Pendaftaran formulir dan administrasi awal <b>100% gratis</b>.<br><br>Biaya pendidikan menggunakan sistem subsidi silang sesuai golongan. Rincian SPP dan Wakaf Sarpras tersedia pada halaman Biaya.<br><br>Tersedia dukungan beasiswa sesuai ketentuan program.',
   syarat:
-    'Dokumen yang perlu disiapkan (diunggah online):<br>1. Fotokopi Kartu Keluarga (KK)<br>2. Akta Kelahiran<br>3. Pas Foto 3x4<br>4. Rapor terakhir<br>5. Surat izin orang tua (jika diperlukan)',
+    'Dokumen umum:<br>1. Bukti daftar online<br>2. Pas foto terbaru latar merah ukuran 4x6<br>3. Akta kelahiran<br>4. KK terbaru ber-barcode<br>5. Surat pernyataan orang tua/wali<br>6. Slip gaji atau surat keterangan penghasilan.',
   alur:
-    'Alur pendaftaran:<br>1. Registrasi Akun<br>2. Isi Formulir Online<br>3. Unggah Berkas<br>4. Bayar Biaya Pendaftaran<br>5. Ikuti Tes Seleksi<br>6. Pengumuman Kelulusan',
+    'Alur pendaftaran:<br>1. Isi formulir online atau datang ke sekretariat<br>2. Pendaftaran gratis<br>3. Serahkan bukti daftar dan berkas<br>4. Ikuti asesmen<br>5. Ikuti observasi orang tua/wali<br>6. Cek pengumuman resmi di website.',
   program:
-    "Program unggulan:<br>1. Tahfiz Al-Qur'an<br>2. Sains & Riset<br>3. Bahasa Asing<br>4. Adab & Kepemimpinan.<br><br>Fasilitas: Asrama, Lab, Perpustakaan, Lingkungan Islami.",
+    "Program tersedia: SMP, SMA (Boarding), dan Kesetaraan Paket C. Keunggulan meliputi kurikulum nasional dan pesantren, Tahfidz Al-Qur'an, pembelajaran berbasis proyek, riset sains, dan smart school.<br><br>Fasilitas meliputi asrama putra-putri, kelas modern, perpustakaan, laboratorium, olahraga, klinik/UKS, kantin, internet, dan Guest House.",
 };
 
 app.get('/api/health', (req, res) => {

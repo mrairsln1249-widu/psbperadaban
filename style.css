@@ -8,7 +8,8 @@
 
   --ink: #1a202c;
   --ink-2: #4a5568;
-  --ink-3: #a0aec0;
+  --ink-3: #718096;
+  --accent-text: #b7791f;
 
   --primary: #0a2a4e;      /* Navy Blue */
   --primary-2: #153a5b;    /* Navy terang */
@@ -100,10 +101,14 @@ h1, h2, h3, h4 {
 }
 
 .btn--accent {
-  background: var(--primary);
-  color: #ffffff;
+  background: var(--accent);
+  color: var(--primary);
+  box-shadow: 0 6px 20px rgba(226, 168, 44, 0.25);
 }
-.btn--accent:hover { background: var(--primary-2); }
+.btn--accent:hover {
+  background: var(--accent-2);
+  box-shadow: 0 10px 28px rgba(226, 168, 44, 0.35);
+}
 
 .btn--ghost {
   background: transparent;
@@ -202,6 +207,7 @@ h1, h2, h3, h4 {
   transition: transform .25s var(--ease);
 }
 .nav__links a:hover::after { transform: scaleX(1); }
+.nav-mobile-actions { display: none; }
 .portal-login-link {
   color: var(--primary);
   font-size: 13px;
@@ -527,7 +533,10 @@ h1, h2, h3, h4 {
    ============================================================ */
 .grid { display: grid; gap: 20px; }
 .grid--4 { grid-template-columns: repeat(4, 1fr); }
-.grid--3 { grid-template-columns: repeat(3, 1fr); }
+.grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+  align-items: start;
+}
 
 .program {
   background: var(--bg-soft);
@@ -715,6 +724,7 @@ h1, h2, h3, h4 {
   color: var(--ink-2);
   margin: 0;
 }
+.form-container .hero__cta { justify-content: center; }
 
 .form-grid {
   display: grid;
@@ -784,6 +794,7 @@ h1, h2, h3, h4 {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   transition: transform .3s var(--ease), box-shadow .3s var(--ease);
 }
 .wave:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
@@ -802,6 +813,7 @@ h1, h2, h3, h4 {
   background: var(--bg);
   color: var(--ink-2);
   margin-bottom: 16px;
+  align-self: flex-start;
 }
 .wave--active .wave__tag {
   background: var(--primary);
@@ -850,7 +862,7 @@ h1, h2, h3, h4 {
   font-weight: 700;
   letter-spacing: -0.01em;
 }
-.wave--active .wave__price { color: var(--accent-2); }
+.wave--active .wave__price { color: var(--accent-text); }
 
 .wave__discount {
   position: absolute;
@@ -1278,7 +1290,9 @@ h1, h2, h3, h4 {
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.7);
-  font-size: 24px;
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
   line-height: 1;
   padding: 0;
   cursor: pointer;
@@ -1345,8 +1359,10 @@ h1, h2, h3, h4 {
   background: transparent;
   border: none;
   color: var(--ink-3);
-  padding: 4px;
-  border-radius: 4px;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -1477,33 +1493,47 @@ h1, h2, h3, h4 {
   .grid--4 { grid-template-columns: repeat(2, 1fr); }
   .grid--3 { grid-template-columns: 1fr; }
   .footer__inner { grid-template-columns: repeat(2, 1fr); }
-}
 
-@media (max-width: 768px) {
   .nav__links { display: none; }
-  .nav__cta { display: none; }
+  .nav__cta,
   .portal-login-link { display: none; }
   .nav__toggle { display: inline-flex; }
-
   .nav.is-open .nav__links {
     display: flex;
     position: absolute;
     top: 72px;
-    left: 0; right: 0;
+    left: 0;
+    right: 0;
     flex-direction: column;
+    align-items: stretch;
     gap: 0;
     background: var(--bg-soft);
     border-bottom: 1px solid var(--line);
     padding: 8px 24px 20px;
     box-shadow: var(--shadow-md);
   }
-  .nav.is-open .nav__links a {
+  .nav.is-open .nav__links > a {
     padding: 14px 0;
     border-bottom: 1px solid var(--line);
     width: 100%;
   }
-  .nav.is-open .nav__links a:last-child { border-bottom: none; }
+  .nav.is-open .nav__links > a:last-of-type { border-bottom: none; }
+  .nav.is-open .nav-mobile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 16px;
+  }
+  .nav-mobile-login {
+    padding: 4px 0;
+    text-align: center;
+    color: var(--primary);
+    font-weight: 600;
+  }
+  .fab--chat::after { display: none; }
+}
 
+@media (max-width: 768px) {
   .hero { padding: 40px 0 64px; }
   .section { padding: 64px 0; }
   .form-section { padding: 64px 0; }
@@ -1543,11 +1573,11 @@ h1, h2, h3, h4 {
   .cta-block { padding: 56px 24px; }
   .card-countdown strong { font-size: 22px; }
 
-  .floating-buttons { bottom: 20px; right: 20px; }
+  .floating-buttons { bottom: 16px; right: 16px; gap: 8px; }
   .chat-widget { 
     width: calc(100% - 40px); 
-    bottom: 90px; 
-    right: 20px; 
+    bottom: 88px;
+    right: 16px;
     max-height: 450px;
   }
 }

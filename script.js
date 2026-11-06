@@ -477,7 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   window.redirectToWA = function(message) {
-    const text = encodeURIComponent(message + "\n\n(Dikirim dari website www.pesantrenperadaban.my.id)");
+    const text = encodeURIComponent(message + "\n\n(Dikirim dari website psb.pesantrenperadaban.my.id)");
     window.open(`https://wa.me/${waNumber}?text=${text}`, '_blank');
   }
 
