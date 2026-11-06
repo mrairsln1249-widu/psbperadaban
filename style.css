@@ -1524,12 +1524,7 @@ h1, h2, h3, h4 {
     gap: 12px;
     padding-top: 16px;
   }
-  .nav-mobile-login {
-    padding: 4px 0;
-    text-align: center;
-    color: var(--primary);
-    font-weight: 600;
-  }
+  .nav-mobile-actions a::after { display: none; }
   .fab--chat::after { display: none; }
 }
 
