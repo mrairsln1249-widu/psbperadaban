@@ -222,8 +222,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['kartu_keluarga', 'Scan Kartu Keluarga *', true, 'application/pdf,image/*', 2, false, ''],
       ['ktp_ayah', 'Scan KTP Ayah *', true, 'application/pdf,image/*', 2, true, 'Maksimal 5 file.'],
       ['ktp_ibu', 'Scan KTP Ibu *', true, 'application/pdf,image/*', 2, false, ''],
-      ['akta_kelahiran', 'Scan Akte Lahir *', true, 'application/pdf,image/*', 2, false, ''],
-      ['bukti_transfer', 'Upload tanda bukti transfer (gelombang 2 dan 3)', false, 'application/pdf,image/*', 2, false, 'Opsional. Unggah jika mendaftar pada gelombang 2 atau 3.']
+      ['akta_kelahiran', 'Scan Akte Lahir *', true, 'application/pdf,image/*', 2, false, '']
     ];
     const container = document.getElementById('documents');
     container.innerHTML = '';
