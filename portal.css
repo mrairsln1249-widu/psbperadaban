@@ -47,6 +47,8 @@
 .portal-card h2 { color: var(--primary); font-size: 20px; margin: 0 0 20px; }
 .document-list { display: grid; gap: 12px; }.document-row { padding: 14px; border: 1px solid var(--line); border-radius: 10px; }
 .document-row strong { display: block; font-size: 13px; color: var(--primary); margin-bottom: 6px; }.document-row small { color: var(--ink-2); }
+.portal-verification-actions { display: grid; gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.portal-verification-actions .btn { width: 100%; min-height: 48px; }
 .table-wrap { overflow-x: auto; }.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }.data-table th, .data-table td { text-align: left; padding: 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }.data-table th { color: var(--primary); background: #f8fafb; }.data-table td.detail-cell { min-width: 220px; white-space: normal; }.detail-cell details p { margin: 8px 0 0; }
 .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eef2f6; color: var(--primary); font-size: 11px; }
 .portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }

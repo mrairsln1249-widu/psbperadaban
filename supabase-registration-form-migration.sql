@@ -22,7 +22,7 @@ alter table public.registrations alter column gelombang drop not null;
 alter table public.registrations drop constraint if exists registrations_jenjang_check;
 alter table public.registrations
   add constraint registrations_jenjang_check
-  check (jenjang in ('MTs', 'MA', 'SMP (Pesantren)', 'SMA (Full day/sekolah saja)', 'SMA (Sekolah dan Pesantren)'));
+  check (jenjang in ('MTs', 'MA', 'SMP (Pesantren)', 'SMA (Full day/sekolah saja)', 'SMA (Sekolah dan Pesantren)', 'SMP', 'SMA (Boarding)', 'Kesetaraan Paket C'));
 alter table public.registrations drop constraint if exists registrations_jenis_kelamin_check;
 alter table public.registrations
   add constraint registrations_jenis_kelamin_check

@@ -24,7 +24,16 @@ const registrationFields = [
   'alamat',
 ];
 
-const allowedJenjang = new Set(['SMP', 'SMA', 'MTs', 'MA']);
+const allowedJenjang = new Set([
+  'SMP',
+  'SMA (Boarding)',
+  'Kesetaraan Paket C',
+  'MTs',
+  'MA',
+  'SMP (Pesantren)',
+  'SMA (Full day/sekolah saja)',
+  'SMA (Sekolah dan Pesantren)'
+]);
 const allowedGelombang = new Set([
   'Gelombang 1 (Diskon 30%)',
   'Gelombang 2',

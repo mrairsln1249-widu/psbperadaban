@@ -14,7 +14,7 @@ create table if not exists public.registrations (
   tempat_lahir text not null,
   tanggal_lahir date not null,
   jenis_kelamin text not null check (jenis_kelamin in ('Laki-laki', 'Perempuan')),
-  jenjang text not null check (jenjang in ('MTs', 'MA', 'SMP (Pesantren)', 'SMA (Full day/sekolah saja)', 'SMA (Sekolah dan Pesantren)')),
+  jenjang text not null check (jenjang in ('SMP', 'SMA (Boarding)', 'Kesetaraan Paket C')),
   asal_sekolah text not null,
   gelombang text,
   nama_wali text not null,

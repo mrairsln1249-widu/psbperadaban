@@ -14,9 +14,9 @@
         <label>Jenjang dan program yang akan diambil *
           <select name="jenjang" required>
             <option value="">Pilih jenjang dan program</option>
-            <option>SMP (Pesantren)</option>
-            <option>SMA (Full day/sekolah saja)</option>
-            <option>SMA (Sekolah dan Pesantren)</option>
+            <option>SMP</option>
+            <option>SMA (Boarding)</option>
+            <option>Kesetaraan Paket C</option>
           </select>
         </label>
         <label class="full">Alamat Lengkap calon Santri/Siswa (Sesuai Kartu Keluarga)<textarea name="alamat_santri"></textarea></label>
@@ -39,9 +39,9 @@
         </fieldset>
         <div class="full payment-note" role="note"><strong>Pendaftaran gratis</strong><p>Formulir dan administrasi awal tidak dipungut biaya. Informasi biaya pendidikan ditetapkan berdasarkan golongan subsidi silang dan disampaikan pada tahap berikutnya.</p></div>
         <fieldset class="full choice-group"><legend>Dengan ini saya menyatakan dengan sesungguhnya bahwa semua informasi yang disampaikan dalam seluruh dokumen serta lampiran-lampirannya ini adalah benar dan kesatuan yang tidak dapat dipisahkan. Apabila diketemukan dan/atau dibuktikan adanya penipuan/pemalsuan atas informasi yang saya sampaikan, maka saya bersedia dikenakan dan menerima penerapan sanksi. *</legend><label class="choice-option"><input name="pernyataan_setuju" type="radio" value="true" required> Setuju</label><label class="choice-option"><input name="pernyataan_setuju" type="radio" value="false" required> Tidak setuju</label></fieldset>
-        <div class="full portal-actions"><button class="btn btn--ghost" type="submit" id="saveRegistration">Simpan Draft</button><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><div class="portal-status" id="registrationStatus" role="alert" aria-live="assertive" hidden></div></div>
+        <div class="full portal-actions"><button class="btn btn--ghost" type="submit" id="saveRegistration">Simpan Draft</button></div>
       </form></section>
-      <aside class="portal-card"><h2>Upload Dokumen</h2><p>Simpan data pendaftaran terlebih dahulu sebelum mengunggah berkas.</p><div class="document-list" id="documents"><div class="document-row"><strong>Isi data pendaftaran terlebih dahulu</strong><small>Dokumen tersedia setelah data disimpan.</small></div></div></aside>
+      <aside class="portal-card"><h2>Upload Dokumen</h2><p>Simpan data pendaftaran terlebih dahulu sebelum mengunggah berkas.</p><div class="document-list" id="documents"><div class="document-row"><strong>Isi data pendaftaran terlebih dahulu</strong><small>Dokumen tersedia setelah data disimpan.</small></div></div><div class="portal-verification-actions"><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><div class="portal-status" id="registrationStatus" role="alert" aria-live="assertive" hidden></div></div></aside>
     </div>
   </main>
   <dialog class="registration-notice" id="registrationNotice" aria-labelledby="registrationNoticeTitle" aria-describedby="registrationNoticeMessage">

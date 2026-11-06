@@ -230,10 +230,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     types.forEach(([type, label, required, accept, maxSizeMb, multiple, helpText]) => {
       const row = document.createElement('label');
       row.className = 'document-row';
-      row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}" ${multiple ? 'multiple' : ''}><small>${helpText ? `${helpText} ` : ''}Maksimal ${maxSizeMb} MB per file.</small>`;
+      row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}" ${multiple ? 'multiple' : ''}><small>${helpText ? `${helpText} ` : ''}Format: ${formatAcceptedTypes(accept)}. Maksimal ${maxSizeMb} MB per file${multiple ? '; maksimal 5 file.' : '.'}</small>`;
       row.querySelector('input').addEventListener('change', event => uploadDocument(event.target, type, maxSizeMb, multiple, accept));
       container.appendChild(row);
     });
+  }
+  function formatAcceptedTypes(accept) {
+    return accept.split(',').map(type => type === 'image/*' ? 'JPG, PNG, atau gambar' : 'PDF').join(' atau ');
   }
   async function uploadDocument(input, type, maxSizeMb, multiple, accept) {
     const files = Array.from(input.files || []);
