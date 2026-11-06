@@ -234,6 +234,25 @@ document.addEventListener('DOMContentLoaded', async () => {
       ditolak: 1
     };
     const currentIndex = statusStage[registration.status] ?? 0;
+    const statusLabels = {
+      draft: 'Draft',
+      perlu_perbaikan: 'Perlu Perbaikan',
+      menunggu_verifikasi: 'Menunggu Verifikasi Admin',
+      terverifikasi: 'Terverifikasi',
+      menunggu_pembayaran: 'Menuju Ujian',
+      pembayaran_diperiksa: 'Menuju Ujian',
+      pembayaran_lunas: 'Menuju Ujian',
+      siap_ujian: 'Siap Mengikuti Ujian',
+      sudah_ujian: 'Ujian Selesai',
+      lulus: 'Lulus',
+      tidak_lulus: 'Tidak Lulus',
+      cadangan: 'Daftar Cadangan',
+      daftar_ulang_selesai: 'Daftar Ulang Selesai',
+      ditolak: 'Ditolak'
+    };
+    const statusSummary = document.getElementById('registrationStatusSummary');
+    statusSummary.textContent = `Status pendaftaran: ${statusLabels[registration.status] || registration.status}`;
+    statusSummary.className = `status-summary status-summary--${registration.status}`;
     document.getElementById('statusStepper').innerHTML = steps.map((step, index) => {
       const state = index < currentIndex ? 'is-done' : index === currentIndex ? 'is-current' : '';
       return `<span class="status-step ${state}">${step[1]}</span>`;
@@ -391,5 +410,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     const locked = !['draft', 'perlu_perbaikan'].includes(registration.status);
     saveRegistration.disabled = locked;
     submitVerification.disabled = locked;
+    client.channel(`registration-status-${registration.id}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'registrations',
+        filter: `id=eq.${registration.id}`
+      }, payload => {
+        registration = { ...registration, ...payload.new };
+        renderStatus();
+        if (registration.status === 'perlu_perbaikan') renderDocuments();
+      })
+      .subscribe();
   }
 });

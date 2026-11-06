@@ -76,6 +76,9 @@
 .portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }
 .portal-actions .btn { min-height: 46px; }
 .status-stepper { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 22px; }.status-step { padding: 7px 10px; border-radius: 8px; background: #eef2f6; color: var(--ink-2); font-size: 11px; }.status-step.is-current { background: var(--accent); color: var(--primary); font-weight: 700; }.status-step.is-done { background: #d7f5e8; color: #087443; }
+.status-summary { margin: 0 0 12px; padding: 12px 14px; border-left: 4px solid var(--accent); border-radius: 8px; background: #f8fafb; color: var(--primary); font-size: 14px; font-weight: 700; }
+.status-summary--terverifikasi, .status-summary--siap_ujian, .status-summary--sudah_ujian, .status-summary--lulus, .status-summary--daftar_ulang_selesai { border-left-color: var(--success); background: #f0fdf7; }
+.status-summary--perlu_perbaikan, .status-summary--tidak_lulus, .status-summary--ditolak { border-left-color: var(--danger); background: #fff5f5; }
 .revision-note { margin: -8px 0 22px; padding: 14px 16px; border: 1px solid rgb(226 168 44 / 45%); border-radius: 10px; background: #fffbeb; color: var(--primary); font-size: 13px; line-height: 1.6; }
 .revision-note[hidden] { display: none; }
 @media (max-width: 900px) {
