@@ -229,57 +229,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     types.forEach(([type, label, required, accept, maxSizeMb, multiple, helpText]) => {
       const row = document.createElement('label');
       row.className = 'document-row';
-      row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}" ${multiple ? 'multiple' : ''}><small>${helpText ? `${helpText} ` : ''}Format: ${formatAcceptedTypes(accept)}. Maksimal ${maxSizeMb} MB per file${multiple ? '; maksimal 5 file.' : '.'}</small>`;
-      row.querySelector('input').addEventListener('change', event => uploadDocument(event.target, type, maxSizeMb, multiple, accept));
+      row.innerHTML = `<strong>${label}${required ? '' : ' (opsional)'}</strong><input type="file" accept="${accept}" data-type="${type}" ${multiple ? 'multiple' : ''}><small>${helpText ? `${helpText} ` : ''}Format: ${formatAcceptedTypes(accept)}. Maksimal ${maxSizeMb} MB per file${multiple ? '; maksimal 5 file.' : '.'}</small><span class="document-status" role="status" aria-live="polite"></span>`;
+      const input = row.querySelector('input');
+      input.addEventListener('change', event => uploadDocument(input, type, maxSizeMb, multiple, accept, row.querySelector('.document-status')));
       container.appendChild(row);
     });
   }
   function formatAcceptedTypes(accept) {
     return accept.split(',').map(type => type === 'image/*' ? 'JPG, PNG, atau gambar' : 'PDF').join(' atau ');
   }
-  async function uploadDocument(input, type, maxSizeMb, multiple, accept) {
+  async function uploadDocument(input, type, maxSizeMb, multiple, accept, documentStatus) {
     const files = Array.from(input.files || []);
     if (!files.length || !registration) return;
+    const setDocumentStatus = (message, kind) => {
+      documentStatus.textContent = message;
+      documentStatus.className = `document-status is-${kind}`;
+    };
     const acceptedTypes = accept.split(',');
     if (files.some(file => !acceptedTypes.some(accepted => accepted === 'image/*' ? file.type.startsWith('image/') : file.type === accepted))) {
       input.value = '';
-      status.textContent = 'Format file tidak sesuai. Gunakan gambar atau PDF sesuai jenis dokumen.';
-      status.className = 'portal-status is-error';
+      setDocumentStatus(`Gagal: format tidak sesuai. Gunakan ${formatAcceptedTypes(accept)}.`, 'error');
       return;
     }
     if (files.some(file => file.size > maxSizeMb * 1024 * 1024)) {
       input.value = '';
-      status.textContent = `Ukuran setiap file maksimal ${maxSizeMb} MB.`;
-      status.className = 'portal-status is-error';
+      setDocumentStatus(`Gagal: ukuran file melebihi ${maxSizeMb} MB.`, 'error');
       return;
     }
     if (multiple && files.length > 5) {
       input.value = '';
-      status.textContent = 'KTP Ayah maksimal 5 file.';
-      status.className = 'portal-status is-error';
+      setDocumentStatus('Gagal: KTP Ayah maksimal 5 file.', 'error');
       return;
     }
+    setDocumentStatus('Sedang mengunggah...', 'pending');
     const existing = multiple
       ? await client.from('registration_documents').select('file_path').eq('registration_id', registration.id).eq('document_type', type)
       : { data: [], error: null };
     if (existing.error) {
-      status.textContent = existing.error.message;
-      status.className = 'portal-status is-error';
+      setDocumentStatus(`Gagal: ${existing.error.message}`, 'error');
       return;
     }
     const paths = files.map(file => getDocumentPath(type, file));
     if (multiple && new Set([...(existing.data || []).map(document => document.file_path), ...paths]).size > 5) {
       input.value = '';
-      status.textContent = 'Jumlah file KTP Ayah maksimal 5.';
-      status.className = 'portal-status is-error';
+      setDocumentStatus('Gagal: jumlah file KTP Ayah maksimal 5.', 'error');
       return;
     }
     for (const [index, file] of files.entries()) {
       const path = paths[index];
       const upload = await client.storage.from('registration-documents').upload(path, file, { upsert: true });
       if (upload.error) {
-        status.textContent = upload.error.message;
-        status.className = 'portal-status is-error';
+        setDocumentStatus(`Gagal mengunggah: ${upload.error.message}`, 'error');
         return;
       }
       const saved = await client.from('registration_documents').upsert(
@@ -287,13 +287,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         { onConflict: 'registration_id,document_type,file_path' }
       );
       if (saved.error) {
-        status.textContent = saved.error.message;
-        status.className = 'portal-status is-error';
+        setDocumentStatus(`Gagal menyimpan data file: ${saved.error.message}`, 'error');
         return;
       }
     }
-    status.textContent = `${files.length} file berhasil diunggah.`;
-    status.className = 'portal-status is-success';
+    setDocumentStatus(`${files.length} file berhasil diunggah.`, 'success');
   }
   function getDocumentPath(type, file) {
     return `${user.id}/${registration.id}/${type}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`;
