@@ -96,15 +96,18 @@
 .result-card--tidak_lulus { background: linear-gradient(135deg, #3c2430 0%, #652f3b 100%); }
 .result-card--cadangan { background: linear-gradient(135deg, #0b3156 0%, #705019 100%); }
 .result-card__eyebrow { color: #f1c45b; font-size: 11px; font-weight: 800; letter-spacing: .16em; }
+.result-card__badge { display: inline-flex; margin: 12px 0 2px; padding: 5px 10px; border: 1px solid rgb(241 196 91 / 55%); border-radius: 999px; background: rgb(241 196 91 / 14%); color: #f7d77f; font-size: 10px; font-weight: 800; letter-spacing: .1em; }
 .result-card__brand { display: flex; align-items: center; gap: 9px; margin: 14px 0 24px; font-size: 13px; font-weight: 700; }
 .result-card__brand img { width: 34px; height: 34px; object-fit: contain; border-radius: 8px; background: #fff; }
 .result-card__title { max-width: 560px; margin-bottom: 10px; font-family: Georgia, serif; font-size: clamp(24px, 4vw, 36px); line-height: 1.15; }
+.result-card__subtitle { margin: -2px 0 10px; color: #f1c45b; font-family: Georgia, serif; font-size: 18px; font-style: italic; }
 .result-card__message, .result-card__next { max-width: 620px; color: rgb(255 255 255 / 84%); font-size: 13px; line-height: 1.7; }
 .result-card__details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 24px 0 18px; max-width: 680px; }
 .result-card__details div { padding: 11px 12px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 9px; background: rgb(0 0 0 / 12%); }
 .result-card__details span { display: block; margin-bottom: 5px; color: rgb(255 255 255 / 62%); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
 .result-card__details strong { display: block; overflow-wrap: anywhere; font-size: 13px; }
 .result-card__next { padding-top: 15px; border-top: 1px solid rgb(255 255 255 / 16%); }
+.result-card > .btn--gold { margin-top: 18px; }
 .exam-info { margin: 0 0 18px; padding: 16px; border: 1px solid rgb(16 185 129 / 30%); border-radius: 10px; background: #f0fdf7; color: #087443; font-size: 13px; line-height: 1.6; }
 .exam-info[hidden] { display: none; }
 .exam-info p { margin: 6px 0 12px; }
@@ -123,7 +126,13 @@
   .portal-grid { grid-template-columns: 1fr; }
 }
 @media (max-width: 760px) {
-  .portal-shell { width: min(100% - 24px, 640px); padding-top: 20px; }
+  .portal-shell { width: min(100% - 24px, 640px); padding-top: 20px;   }
+  @media print {
+    body.portal-page { background: #fff; }
+    .portal-header, .portal-contact, .portal-card > h2, .status-summary, .status-stepper, .status-message, .registration-lock-notice, .revision-note, .portal-form, #documentsPanel, .result-card > .btn--gold { display: none !important; }
+    .portal-shell, .portal-grid, .portal-card { display: block; width: 100%; max-width: none; padding: 0; margin: 0; border: 0; box-shadow: none; }
+    .result-card { margin: 0; min-height: 520px; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  }
   .portal-grid, .portal-form { grid-template-columns: 1fr; }
   .portal-form .full { grid-column: auto; }
   .grade-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

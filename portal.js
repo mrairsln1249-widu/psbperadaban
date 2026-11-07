@@ -326,17 +326,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     const isAnnouncement = announcementStatuses.has(registration.status);
     registrationSectionTitle.hidden = isAnnouncement;
     statusSummary.hidden = isAnnouncement;
+    document.getElementById('statusStepper').hidden = isAnnouncement;
     resultCard.hidden = !isAnnouncement;
     statusMessage.hidden = isAnnouncement;
     resultCard.className = `result-card result-card--${registration.status}`;
     if (isAnnouncement) {
       const result = resultContent[registration.status];
+      let badge = document.getElementById('resultBadge');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.id = 'resultBadge';
+        badge.className = 'result-card__badge';
+        resultCard.querySelector('.result-card__eyebrow').after(badge);
+      }
+      badge.textContent = registration.status === 'lulus' || registration.status === 'daftar_ulang_selesai'
+        ? 'DITERIMA'
+        : registration.status === 'cadangan' ? 'DAFTAR CADANGAN' : 'HASIL SELEKSI';
       document.getElementById('resultTitle').textContent = result.title;
+      let subtitle = document.getElementById('resultSubtitle');
+      if (!subtitle) {
+        subtitle = document.createElement('div');
+        subtitle.id = 'resultSubtitle';
+        subtitle.className = 'result-card__subtitle';
+        document.getElementById('resultTitle').after(subtitle);
+      }
+      subtitle.textContent = registration.status === 'lulus'
+        ? 'Sebagai Santri Pesantren Peradaban'
+        : '';
       document.getElementById('resultMessage').textContent = result.message;
       document.getElementById('resultName').textContent = registration.nama || '-';
       document.getElementById('resultNumber').textContent = registration.registration_number || '-';
       document.getElementById('resultProgram').textContent = registration.jenjang || '-';
       document.getElementById('resultNext').textContent = result.next;
+      let printButton = document.getElementById('printResult');
+      if (!printButton) {
+        printButton = document.createElement('button');
+        printButton.id = 'printResult';
+        printButton.type = 'button';
+        printButton.className = 'btn btn--gold';
+        printButton.textContent = 'Cetak Hasil Seleksi';
+        printButton.addEventListener('click', () => window.print());
+        document.getElementById('resultNext').after(printButton);
+      }
     }
     examInfo.hidden = registration.status !== 'siap_ujian' || !registration.tanggal_ujian;
     examInfo.innerHTML = '';
