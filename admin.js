@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (profilesResult.error) { status.textContent = `Email pendaftar gagal dimuat: ${profilesResult.error.message}`; status.className = 'portal-status is-error'; return; }
   const emailByUserId = new Map((profilesResult.data || []).map(profile => [profile.id, profile.email]));
   const tbody = document.getElementById('registrations');
+  const renderedRows = [];
   result.data.forEach(registration => {
     const row = document.createElement('tr');
     const numberCell = document.createElement('td');
@@ -241,8 +242,60 @@ document.addEventListener('DOMContentLoaded', async () => {
       saveAction.disabled = false;
     });
     tbody.appendChild(row);
+    renderedRows.push({ registration, row });
     loadRegistrationDocuments(registration.id, documentsCell);
   });
+
+  const exportStatus = document.getElementById('exportStatus');
+  const exportProgram = document.getElementById('exportProgram');
+  function getFilteredRegistrations() {
+    return result.data.filter(registration =>
+      (!exportStatus.value || registration.status === exportStatus.value)
+      && (!exportProgram.value || registration.jenjang === exportProgram.value)
+    );
+  }
+  function refreshRegistrationRows() {
+    const filteredIds = new Set(getFilteredRegistrations().map(registration => registration.id));
+    renderedRows.forEach(({ registration, row }) => { row.hidden = !filteredIds.has(registration.id); });
+  }
+  function csvCell(value) {
+    return `"${String(value ?? '').replace(/"/g, '""').replace(/\r?\n/g, ' ')}"`;
+  }
+  function downloadCsv() {
+    const rows = getFilteredRegistrations();
+    if (!rows.length) {
+      status.textContent = 'Tidak ada pendaftar yang sesuai filter untuk diunduh.';
+      status.className = 'portal-status is-pending';
+      return;
+    }
+    const headers = ['Nomor Pendaftaran', 'Nama', 'Email Akun', 'Program', 'WhatsApp Santri', 'WhatsApp Orang Tua', 'Status', 'Tanggal Ujian', 'URL CBT', 'Username CBT'];
+    const csvRows = rows.map(registration => [
+      registration.registration_number,
+      registration.nama,
+      emailByUserId.get(registration.user_id) || '',
+      registration.jenjang,
+      registration.wa_santri || registration.wa_wali || '',
+      registration.wa_orangtua || registration.wa_wali || '',
+      registration.status,
+      registration.tanggal_ujian || '',
+      registration.url_ujian || '',
+      registration.cbt_username || emailByUserId.get(registration.user_id) || ''
+    ].map(csvCell).join(','));
+    const blob = new Blob([`\uFEFF${[headers.map(csvCell).join(','), ...csvRows].join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const program = exportProgram.value ? `-${exportProgram.value.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` : '';
+    const selectedStatus = exportStatus.value ? `-${exportStatus.value}` : '';
+    link.href = url;
+    link.download = `data-pendaftar${selectedStatus}${program}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    status.textContent = `${rows.length} data pendaftar berhasil disiapkan untuk diunduh.`;
+    status.className = 'portal-status is-success';
+  }
+  exportStatus.addEventListener('change', refreshRegistrationRows);
+  exportProgram.addEventListener('change', refreshRegistrationRows);
+  document.getElementById('exportRegistrations').addEventListener('click', downloadCsv);
 
   async function loadRegistrationDocuments(registrationId, cell) {
     const result = await client

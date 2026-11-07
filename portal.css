@@ -72,6 +72,11 @@
 .admin-document-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; }
 .admin-document-list li > span { overflow-wrap: anywhere; font-size: 12px; }
 .admin-document-link { padding: 7px 10px; font-size: 11px; }
+.admin-export-tools { display: flex; flex-wrap: wrap; align-items: end; gap: 10px; margin: 0 0 8px; }
+.admin-export-tools label { display: grid; gap: 5px; color: var(--primary); font-size: 12px; font-weight: 700; }
+.admin-export-tools select { min-width: 180px; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: 8px; font: inherit; background: #fff; }
+.admin-export-tools .btn { min-height: 42px; }
+.admin-export-help { margin: 0 0 16px; color: var(--ink-2); font-size: 12px; }
 .badge { display: inline-block; padding: 4px 9px; border-radius: 999px; background: #eef2f6; color: var(--primary); font-size: 11px; }
 .portal-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }.portal-actions .portal-status { flex-basis: 100%; }
 .portal-actions .btn { min-height: 46px; }
