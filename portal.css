@@ -49,6 +49,8 @@
 .portal-form .choice-group legend { color: var(--primary); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
 .portal-form .choice-option { display: inline-flex; align-items: center; gap: 8px; margin: 8px 18px 0 0; color: var(--ink-2); font-weight: 400; }
 .portal-form .choice-option input { width: auto; margin: 0; }
+.address-region-status { min-height: 18px; margin: -4px 0 8px; color: var(--ink-2); font-size: 12px; font-weight: 500; }
+.address-region-status.is-error { color: var(--danger); }
 .grade-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .grade-grid label { margin: 0; }
 .payment-note { padding: 14px; border-radius: 10px; background: #f8fafb; color: var(--ink-2); font-size: 13px; }

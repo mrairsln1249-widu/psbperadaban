@@ -22,6 +22,7 @@ alter table public.registrations
   add column if not exists cbt_username text,
   add column if not exists cbt_password text,
   add column if not exists agama text,
+  add column if not exists provinsi text,
   add column if not exists alamat_rt_rw text,
   add column if not exists kelurahan text,
   add column if not exists kecamatan text,

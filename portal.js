@@ -75,6 +75,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   const portalTitle = document.getElementById('portalTitle');
   const pilihanProgram = document.getElementById('pilihanProgram');
   const pilihanProgramLabel = document.getElementById('pilihanProgramLabel');
+  const provinceSelect = document.getElementById('provinsi');
+  const regencySelect = document.getElementById('kabupatenKota');
+  const districtSelect = document.getElementById('kecamatan');
+  const villageSelect = document.getElementById('kelurahan');
+  const addressRegionStatus = document.getElementById('addressRegionStatus');
+  const regionApiBase = 'https://www.emsifa.com/api-wilayah-indonesia/api';
   const editableStatuses = ['draft', 'perlu_perbaikan'];
   const completedStageStatuses = new Set([
     'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas',
@@ -110,6 +116,106 @@ document.addEventListener('DOMContentLoaded', async () => {
     pilihanProgramLabel.firstChild.textContent = prompts[form.elements.jenjang.value] || 'Pilihan program/keterangan khusus (opsional)';
   }
   form.elements.jenjang.addEventListener('change', updateProgramPrompt);
+  function setRegionStatus(message, kind) {
+    addressRegionStatus.textContent = message;
+    addressRegionStatus.className = `full address-region-status${kind ? ` is-${kind}` : ''}`;
+  }
+  function setRegionOptions(select, items, placeholder, selectedValue) {
+    select.innerHTML = '';
+    const emptyOption = document.createElement('option');
+    emptyOption.value = '';
+    emptyOption.textContent = placeholder;
+    select.appendChild(emptyOption);
+    items.forEach(item => {
+      const option = document.createElement('option');
+      option.value = item.name;
+      option.textContent = item.name;
+      option.dataset.regionId = item.id;
+      select.appendChild(option);
+    });
+    if (selectedValue && !items.some(item => item.name === selectedValue)) {
+      const legacyOption = document.createElement('option');
+      legacyOption.value = selectedValue;
+      legacyOption.textContent = `${selectedValue} (data tersimpan)`;
+      select.appendChild(legacyOption);
+    }
+    select.value = selectedValue || '';
+    select.disabled = false;
+  }
+  async function loadRegionOptions(url, select, placeholder, selectedValue) {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Layanan wilayah mengembalikan status ${response.status}.`);
+    const items = await response.json();
+    if (!Array.isArray(items)) throw new Error('Data wilayah tidak valid.');
+    setRegionOptions(select, items, placeholder, selectedValue);
+  }
+  function clearRegionOptions(select, placeholder) {
+    select.innerHTML = `<option value="">${placeholder}</option>`;
+    select.disabled = true;
+  }
+  async function loadDependentRegions(parentSelect, childSelect, childPlaceholder, endpoint, selectedValue) {
+    const parentOption = parentSelect.options[parentSelect.selectedIndex];
+    clearRegionOptions(childSelect, childPlaceholder);
+    if (!parentOption || !parentOption.dataset.regionId) return;
+    await loadRegionOptions(`${regionApiBase}/${endpoint}/${parentOption.dataset.regionId}.json`, childSelect, childPlaceholder, selectedValue);
+  }
+  async function initializeRegionFields() {
+    const savedProvince = registration ? registration.provinsi : '';
+    const savedRegency = registration ? registration.kabupaten_kota : '';
+    const savedDistrict = registration ? registration.kecamatan : '';
+    const savedVillage = registration ? registration.kelurahan : '';
+    try {
+      await loadRegionOptions(`${regionApiBase}/provinces.json`, provinceSelect, 'Pilih provinsi', savedProvince);
+      if (savedProvince) {
+        await loadDependentRegions(provinceSelect, regencySelect, 'Pilih kabupaten/kota', 'regencies', savedRegency);
+      }
+      if (savedRegency) {
+        await loadDependentRegions(regencySelect, districtSelect, 'Pilih kecamatan', 'districts', savedDistrict);
+      }
+      if (savedDistrict) {
+        await loadDependentRegions(districtSelect, villageSelect, 'Pilih kelurahan/desa', 'villages', savedVillage);
+      }
+      if (!savedProvince) {
+        setRegionOptions(regencySelect, savedRegency ? [{ id: '', name: savedRegency }] : [], 'Pilih kabupaten/kota', savedRegency);
+        setRegionOptions(districtSelect, savedDistrict ? [{ id: '', name: savedDistrict }] : [], 'Pilih kecamatan', savedDistrict);
+        setRegionOptions(villageSelect, savedVillage ? [{ id: '', name: savedVillage }] : [], 'Pilih kelurahan/desa', savedVillage);
+      }
+      setRegionStatus('Pilih wilayah secara berurutan agar data alamat lebih akurat.', '');
+    } catch (error) {
+      provinceSelect.disabled = false;
+      setRegionStatus(`Data wilayah belum dapat dimuat. Periksa koneksi lalu refresh halaman. ${error.message}`, 'error');
+    }
+  }
+  provinceSelect.addEventListener('change', async () => {
+    clearRegionOptions(regencySelect, 'Memuat kabupaten/kota...');
+    clearRegionOptions(districtSelect, 'Pilih kabupaten/kota terlebih dahulu');
+    clearRegionOptions(villageSelect, 'Pilih kecamatan terlebih dahulu');
+    try {
+      await loadDependentRegions(provinceSelect, regencySelect, 'Pilih kabupaten/kota', 'regencies');
+      setRegionStatus('Kabupaten/kota tersedia berdasarkan provinsi yang dipilih.', '');
+    } catch (error) {
+      setRegionStatus(`Kabupaten/kota belum dapat dimuat: ${error.message}`, 'error');
+    }
+  });
+  regencySelect.addEventListener('change', async () => {
+    clearRegionOptions(districtSelect, 'Memuat kecamatan...');
+    clearRegionOptions(villageSelect, 'Pilih kecamatan terlebih dahulu');
+    try {
+      await loadDependentRegions(regencySelect, districtSelect, 'Pilih kecamatan', 'districts');
+      setRegionStatus('Kecamatan tersedia berdasarkan kabupaten/kota yang dipilih.', '');
+    } catch (error) {
+      setRegionStatus(`Kecamatan belum dapat dimuat: ${error.message}`, 'error');
+    }
+  });
+  districtSelect.addEventListener('change', async () => {
+    clearRegionOptions(villageSelect, 'Memuat kelurahan/desa...');
+    try {
+      await loadDependentRegions(districtSelect, villageSelect, 'Pilih kelurahan/desa', 'villages');
+      setRegionStatus('Kelurahan/desa tersedia berdasarkan kecamatan yang dipilih.', '');
+    } catch (error) {
+      setRegionStatus(`Kelurahan/desa belum dapat dimuat: ${error.message}`, 'error');
+    }
+  });
   function applyRegistrationAccess() {
     updatePortalTitle();
     const editable = Boolean(registration && editableStatuses.includes(registration.status));
@@ -133,6 +239,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.elements.tempat_lahir.value = registration.tempat_lahir || birthInfo.place;
     form.elements.tanggal_lahir.value = registration.tanggal_lahir || birthInfo.date;
   }
+  await initializeRegionFields();
   updateProgramPrompt();
 
   function getRegistrationValues() {
@@ -156,6 +263,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['Program/jenjang', registration.jenjang],
       ['Asal sekolah', registration.asal_sekolah],
       ['Alamat lengkap', registration.alamat_santri || registration.alamat],
+      ['Provinsi', registration.provinsi],
       ['RT/RW', registration.alamat_rt_rw],
       ['Kelurahan/Desa', registration.kelurahan],
       ['Kecamatan', registration.kecamatan],
@@ -266,7 +374,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const values = getRegistrationValues();
     const requiredFields = [
       'nama', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'asal_sekolah', 'jenjang',
-      'agama', 'alamat_rt_rw', 'kelurahan', 'kecamatan', 'kabupaten_kota',
+      'agama', 'provinsi', 'alamat_rt_rw', 'kelurahan', 'kecamatan', 'kabupaten_kota',
       'wa_santri', 'nama_ayah', 'nama_ibu', 'wa_orangtua', 'alamat_orangtua',
       'sumber_informasi', 'motivasi_santri', 'motivasi_orangtua',
       'nilai_rapor_semester_1', 'nilai_rapor_semester_2', 'nilai_rapor_semester_3',

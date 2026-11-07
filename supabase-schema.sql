@@ -43,6 +43,7 @@ create table if not exists public.registrations (
   cbt_username text,
   cbt_password text,
   agama text,
+  provinsi text,
   alamat_rt_rw text,
   kelurahan text,
   kecamatan text,

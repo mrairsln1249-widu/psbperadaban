@@ -21,10 +21,28 @@
           </select>
         </label>
         <label class="full">Alamat Lengkap calon Santri/Siswa (Sesuai Kartu Keluarga)<textarea name="alamat_santri"></textarea></label>
+        <label>Provinsi *
+          <select name="provinsi" id="provinsi" required disabled>
+            <option value="">Memuat provinsi...</option>
+          </select>
+        </label>
+        <label>Kabupaten/Kota *
+          <select name="kabupaten_kota" id="kabupatenKota" required disabled>
+            <option value="">Pilih provinsi terlebih dahulu</option>
+          </select>
+        </label>
+        <label>Kecamatan *
+          <select name="kecamatan" id="kecamatan" required disabled>
+            <option value="">Pilih kabupaten/kota terlebih dahulu</option>
+          </select>
+        </label>
+        <label>Kelurahan/Desa *
+          <select name="kelurahan" id="kelurahan" required disabled>
+            <option value="">Pilih kecamatan terlebih dahulu</option>
+          </select>
+        </label>
         <label>RT/RW *<input name="alamat_rt_rw" placeholder="04/02" required></label>
-        <label>Kelurahan/Desa *<input name="kelurahan" required></label>
-        <label>Kecamatan *<input name="kecamatan" required></label>
-        <label>Kabupaten/Kota *<input name="kabupaten_kota" required></label>
+        <p class="full address-region-status" id="addressRegionStatus" role="status" aria-live="polite"></p>
         <label>Nomor HP/WA Calon Siswa/Santri *<input name="wa_santri" type="tel" autocomplete="tel" required></label>
         <label>Instagram (opsional)<input name="instagram" placeholder="@username"></label>
         <label>YouTube (opsional)<input name="youtube" placeholder="Nama kanal atau tautan"></label>
@@ -67,6 +85,6 @@
       <button class="btn btn--primary" type="button" id="closeRegistrationNotice">Tutup</button>
     </div>
   </dialog>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js?v=20261107"></script><script src="supabase-client.js?v=20261107"></script><script src="portal.js?v=20261107c"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js?v=20261107"></script><script src="supabase-client.js?v=20261107"></script><script src="portal.js?v=20261107d"></script>
 </body>
 </html>
