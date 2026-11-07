@@ -73,14 +73,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const documentHelpText = document.getElementById('documentHelpText');
   const documentsPanel = document.getElementById('documentsPanel');
   const editableStatuses = ['draft', 'perlu_perbaikan'];
-  const completedStageStatuses = [
+  const completedStageStatuses = new Set([
     'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas',
     'siap_ujian', 'sudah_ujian', 'lulus', 'tidak_lulus', 'cadangan',
     'daftar_ulang_selesai'
-  ];
+  ]);
   function applyRegistrationAccess() {
     const editable = Boolean(registration && editableStatuses.includes(registration.status));
-    const hideApplicationDetails = Boolean(registration && completedStageStatuses.includes(registration.status));
+    const hideApplicationDetails = Boolean(registration && completedStageStatuses.has(registration.status));
     form.querySelectorAll('input, select, textarea, button').forEach(control => { control.disabled = !editable; });
     form.hidden = hideApplicationDetails;
     documentsPanel.hidden = hideApplicationDetails;
