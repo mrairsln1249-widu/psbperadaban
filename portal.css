@@ -87,6 +87,23 @@
 .status-message { margin: 0 0 18px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 9px; background: #f8fafb; color: var(--ink-2); font-size: 13px; line-height: 1.6; }
 .status-message--terverifikasi, .status-message--lulus, .status-message--daftar_ulang_selesai { border-color: rgb(16 185 129 / 30%); background: #f0fdf7; color: #087443; }
 .status-message--perlu_perbaikan, .status-message--tidak_lulus, .status-message--ditolak { border-color: rgb(239 68 68 / 30%); background: #fff5f5; }
+.status-message[hidden] { display: none; }
+.result-card { position: relative; overflow: hidden; margin: 0 0 20px; padding: 26px; border-radius: 16px; background: linear-gradient(135deg, #0b3156 0%, #123f68 58%, #0a2948 100%); color: #fff; box-shadow: 0 18px 34px rgb(11 49 86 / 18%); }
+.result-card::after { position: absolute; right: -48px; bottom: -72px; width: 190px; height: 190px; border: 1px solid rgb(226 168 44 / 40%); border-radius: 50%; box-shadow: 0 0 0 24px rgb(226 168 44 / 6%), 0 0 0 48px rgb(226 168 44 / 4%); content: ""; }
+.result-card[hidden] { display: none; }
+.result-card--lulus, .result-card--daftar_ulang_selesai { background: linear-gradient(135deg, #0b3156 0%, #145b55 100%); }
+.result-card--tidak_lulus { background: linear-gradient(135deg, #3c2430 0%, #652f3b 100%); }
+.result-card--cadangan { background: linear-gradient(135deg, #0b3156 0%, #705019 100%); }
+.result-card__eyebrow { color: #f1c45b; font-size: 11px; font-weight: 800; letter-spacing: .16em; }
+.result-card__brand { display: flex; align-items: center; gap: 9px; margin: 14px 0 24px; font-size: 13px; font-weight: 700; }
+.result-card__brand img { width: 34px; height: 34px; object-fit: contain; border-radius: 8px; background: #fff; }
+.result-card__title { max-width: 560px; margin-bottom: 10px; font-family: Georgia, serif; font-size: clamp(24px, 4vw, 36px); line-height: 1.15; }
+.result-card__message, .result-card__next { max-width: 620px; color: rgb(255 255 255 / 84%); font-size: 13px; line-height: 1.7; }
+.result-card__details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin: 24px 0 18px; max-width: 680px; }
+.result-card__details div { padding: 11px 12px; border: 1px solid rgb(255 255 255 / 15%); border-radius: 9px; background: rgb(0 0 0 / 12%); }
+.result-card__details span { display: block; margin-bottom: 5px; color: rgb(255 255 255 / 62%); font-size: 10px; text-transform: uppercase; letter-spacing: .06em; }
+.result-card__details strong { display: block; overflow-wrap: anywhere; font-size: 13px; }
+.result-card__next { padding-top: 15px; border-top: 1px solid rgb(255 255 255 / 16%); }
 .exam-info { margin: 0 0 18px; padding: 16px; border: 1px solid rgb(16 185 129 / 30%); border-radius: 10px; background: #f0fdf7; color: #087443; font-size: 13px; line-height: 1.6; }
 .exam-info[hidden] { display: none; }
 .exam-info p { margin: 6px 0 12px; }
@@ -113,6 +130,8 @@
   .portal-header .btn { width: 100%; }
   .portal-contact > div { flex-direction: column; }
   .auth-card, .portal-card { padding: 24px 18px; }
+  .result-card { padding: 22px 18px; }
+  .result-card__details { grid-template-columns: 1fr; }
   .portal-actions { align-items: stretch; }
   .portal-actions .btn { width: 100%; }
   .status-stepper { gap: 8px; }

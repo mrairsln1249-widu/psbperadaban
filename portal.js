@@ -293,11 +293,48 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     const statusSummary = document.getElementById('registrationStatusSummary');
     const statusMessage = document.getElementById('registrationStatusMessage');
+    const resultCard = document.getElementById('resultCard');
     const examInfo = document.getElementById('examInfo');
+    const announcementStatuses = new Set(['lulus', 'tidak_lulus', 'cadangan', 'daftar_ulang_selesai']);
+    const resultContent = {
+      lulus: {
+        title: 'Selamat, Anda Dinyatakan Lulus',
+        message: 'Selamat atas pencapaian Anda. Anda berhasil menyelesaikan proses seleksi PSB Pesantren Peradaban.',
+        next: 'Silakan menunggu informasi daftar ulang yang akan disampaikan melalui portal ini.'
+      },
+      tidak_lulus: {
+        title: 'Hasil Seleksi',
+        message: 'Mohon maaf, Anda belum berhasil pada seleksi penerimaan santri baru tahun ini.',
+        next: 'Terima kasih atas kepercayaan dan partisipasi Anda dalam proses seleksi PSB Pesantren Peradaban.'
+      },
+      cadangan: {
+        title: 'Anda Masuk Daftar Cadangan',
+        message: 'Hasil seleksi Anda saat ini tercatat sebagai peserta daftar cadangan.',
+        next: 'Silakan pantau portal ini untuk informasi perkembangan dan instruksi selanjutnya.'
+      },
+      daftar_ulang_selesai: {
+        title: 'Daftar Ulang Berhasil',
+        message: 'Selamat, proses daftar ulang Anda di Pesantren Peradaban telah selesai.',
+        next: 'Terima kasih. Informasi kegiatan berikutnya akan disampaikan melalui portal ini.'
+      }
+    };
     statusSummary.textContent = `Status pendaftaran: ${statusLabels[registration.status] || registration.status}`;
     statusSummary.className = `status-summary status-summary--${registration.status}`;
     statusMessage.textContent = statusMessages[registration.status] || 'Silakan pantau portal ini untuk informasi terbaru mengenai pendaftaran Anda.';
     statusMessage.className = `status-message status-message--${registration.status}`;
+    const isAnnouncement = announcementStatuses.has(registration.status);
+    resultCard.hidden = !isAnnouncement;
+    statusMessage.hidden = isAnnouncement;
+    resultCard.className = `result-card result-card--${registration.status}`;
+    if (isAnnouncement) {
+      const result = resultContent[registration.status];
+      document.getElementById('resultTitle').textContent = result.title;
+      document.getElementById('resultMessage').textContent = result.message;
+      document.getElementById('resultName').textContent = registration.nama || '-';
+      document.getElementById('resultNumber').textContent = registration.registration_number || '-';
+      document.getElementById('resultProgram').textContent = registration.jenjang || '-';
+      document.getElementById('resultNext').textContent = result.next;
+    }
     examInfo.hidden = registration.status !== 'siap_ujian' || !registration.tanggal_ujian;
     examInfo.innerHTML = '';
     if (!examInfo.hidden) {
