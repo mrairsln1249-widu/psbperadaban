@@ -74,11 +74,18 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   const result = await client.from('registrations').select('*').order('created_at', { ascending: false });
   if (result.error) { status.textContent = result.error.message; return; }
+  const userIds = result.data.map(registration => registration.user_id).filter(Boolean);
+  const profilesResult = userIds.length
+    ? await client.from('profiles').select('id, email').in('id', userIds)
+    : { data: [], error: null };
+  if (profilesResult.error) { status.textContent = `Email pendaftar gagal dimuat: ${profilesResult.error.message}`; status.className = 'portal-status is-error'; return; }
+  const emailByUserId = new Map((profilesResult.data || []).map(profile => [profile.id, profile.email]));
   const tbody = document.getElementById('registrations');
   result.data.forEach(registration => {
     const row = document.createElement('tr');
     const numberCell = document.createElement('td');
     const nameCell = document.createElement('td');
+    const emailCell = document.createElement('td');
     const jenjangCell = document.createElement('td');
     const waliCell = document.createElement('td');
     const detailsCell = document.createElement('td');
@@ -93,6 +100,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     phone.textContent = `WA: ${registration.wa_santri || registration.wa_wali || '-'}`;
     nameCell.appendChild(document.createElement('br'));
     nameCell.appendChild(phone);
+    emailCell.textContent = emailByUserId.get(registration.user_id) || '-';
     jenjangCell.textContent = registration.jenjang || '-';
     waliCell.textContent = `${registration.nama_ayah || registration.nama_wali || '-'} / ${registration.nama_ibu || '-'}`;
     const parentPhone = document.createElement('small');
@@ -166,7 +174,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     actionCell.appendChild(examUrl);
     actionCell.appendChild(saveAction);
     documentsCell.textContent = 'Memuat...';
-    [numberCell, nameCell, jenjangCell, waliCell, detailsCell, documentsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
+    [numberCell, nameCell, emailCell, jenjangCell, waliCell, detailsCell, documentsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
     saveAction.addEventListener('click', async () => {
       if (select.value === 'perlu_perbaikan' && !note.value.trim()) {
         status.textContent = 'Tambahkan catatan perbaikan sebelum menyimpan status tersebut.';

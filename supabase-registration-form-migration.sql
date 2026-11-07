@@ -23,6 +23,11 @@ alter table public.registrations
 alter table public.registrations alter column gelombang drop not null;
 alter table public.registrations add column if not exists catatan text;
 alter table public.profiles add column if not exists whatsapp text;
+alter table public.profiles add column if not exists email text;
+update public.profiles p
+set email = u.email
+from auth.users u
+where u.id = p.id and (p.email is null or p.email = '');
 drop policy if exists "Applicants update own profile contact" on public.profiles;
 create policy "Applicants update own profile contact" on public.profiles for update
 using (id = auth.uid())
@@ -30,8 +35,8 @@ with check (id = auth.uid());
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public
 as $$ begin
-  insert into public.profiles (id, full_name, whatsapp)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', 'Pendaftar'), new.raw_user_meta_data->>'whatsapp');
+  insert into public.profiles (id, full_name, whatsapp, email)
+  values (new.id, coalesce(new.raw_user_meta_data->>'full_name', 'Pendaftar'), new.raw_user_meta_data->>'whatsapp', new.email);
   return new;
 end; $$;
 alter table public.registrations drop constraint if exists registrations_jenjang_check;
