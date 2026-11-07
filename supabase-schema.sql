@@ -37,6 +37,8 @@ create table if not exists public.registrations (
   nilai_rapor_semester_5 numeric not null check (nilai_rapor_semester_5 between 0 and 100),
   pernyataan_setuju boolean not null,
   catatan text,
+  tanggal_ujian date,
+  url_ujian text,
   status text not null default 'draft' check (status in ('draft', 'menunggu_verifikasi', 'perlu_perbaikan', 'terverifikasi', 'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas', 'siap_ujian', 'sudah_ujian', 'lulus', 'tidak_lulus', 'cadangan', 'daftar_ulang_selesai', 'ditolak')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

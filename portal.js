@@ -284,10 +284,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     const statusSummary = document.getElementById('registrationStatusSummary');
     const statusMessage = document.getElementById('registrationStatusMessage');
+    const examInfo = document.getElementById('examInfo');
     statusSummary.textContent = `Status pendaftaran: ${statusLabels[registration.status] || registration.status}`;
     statusSummary.className = `status-summary status-summary--${registration.status}`;
     statusMessage.textContent = statusMessages[registration.status] || 'Silakan pantau portal ini untuk informasi terbaru mengenai pendaftaran Anda.';
     statusMessage.className = `status-message status-message--${registration.status}`;
+    examInfo.hidden = registration.status !== 'siap_ujian' || !registration.tanggal_ujian;
+    examInfo.innerHTML = '';
+    if (!examInfo.hidden) {
+      const title = document.createElement('strong');
+      title.textContent = 'Informasi Ujian';
+      const date = document.createElement('p');
+      date.textContent = `Tanggal ujian: ${new Date(`${registration.tanggal_ujian}T00:00:00`).toLocaleDateString('id-ID', { dateStyle: 'full' })}`;
+      examInfo.append(title, date);
+      if (registration.url_ujian) {
+        const link = document.createElement('a');
+        link.href = registration.url_ujian;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = 'Buka portal CBT';
+        link.className = 'btn btn--primary';
+        examInfo.appendChild(link);
+      }
+    }
     document.getElementById('statusStepper').innerHTML = steps.map((step, index) => {
       const state = index < currentIndex ? 'is-done' : index === currentIndex ? 'is-current' : '';
       return `<span class="status-step ${state}">${step[1]}</span>`;

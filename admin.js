@@ -141,12 +141,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     note.placeholder = 'Catatan untuk pendaftar jika perlu perbaikan...';
     note.value = registration.catatan || '';
     note.setAttribute('aria-label', `Catatan untuk ${registration.nama || 'pendaftar'}`);
+    const examDate = document.createElement('input');
+    examDate.type = 'date';
+    examDate.className = 'admin-exam-field';
+    examDate.value = registration.tanggal_ujian || '';
+    examDate.setAttribute('aria-label', `Tanggal ujian untuk ${registration.nama || 'pendaftar'}`);
+    const examUrl = document.createElement('input');
+    examUrl.type = 'url';
+    examUrl.className = 'admin-exam-field';
+    examUrl.placeholder = 'https://cbt.pesantrenperadaban.my.id/login/index.php';
+    examUrl.value = registration.url_ujian || 'https://cbt.pesantrenperadaban.my.id/login/index.php';
+    examUrl.setAttribute('aria-label', `Alamat CBT untuk ${registration.nama || 'pendaftar'}`);
+    const examHelp = document.createElement('small');
+    examHelp.className = 'admin-exam-help';
+    examHelp.textContent = 'Isi jadwal dan URL CBT jika status Siap Ujian.';
     const saveAction = document.createElement('button');
     saveAction.type = 'button';
     saveAction.className = 'btn btn--ghost admin-action-save';
     saveAction.textContent = 'Simpan status';
     actionCell.appendChild(select);
     actionCell.appendChild(note);
+    actionCell.appendChild(examHelp);
+    actionCell.appendChild(examDate);
+    actionCell.appendChild(examUrl);
     actionCell.appendChild(saveAction);
     documentsCell.textContent = 'Memuat...';
     [numberCell, nameCell, jenjangCell, waliCell, detailsCell, documentsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
@@ -158,13 +175,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
       saveAction.disabled = true;
-      const update = await client.from('registrations').update({ status: select.value, catatan: note.value.trim() || null, updated_at: new Date().toISOString() }).eq('id', registration.id);
+      if (select.value === 'siap_ujian' && (!examDate.value || !examUrl.value.trim())) {
+        status.textContent = 'Isi tanggal ujian dan alamat CBT sebelum menetapkan status Siap Ujian.';
+        status.className = 'portal-status is-error';
+        saveAction.disabled = false;
+        return;
+      }
+      const update = await client.from('registrations').update({
+        status: select.value,
+        catatan: note.value.trim() || null,
+        tanggal_ujian: examDate.value || null,
+        url_ujian: examUrl.value.trim() || null,
+        updated_at: new Date().toISOString()
+      }).eq('id', registration.id);
       status.textContent = update.error ? update.error.message : 'Status pendaftar berhasil diperbarui.';
       status.className = update.error ? 'portal-status is-error' : 'portal-status is-success';
       if (!update.error) {
         badge.textContent = select.value;
         registration.status = select.value;
         registration.catatan = note.value.trim();
+        registration.tanggal_ujian = examDate.value || null;
+        registration.url_ujian = examUrl.value.trim() || null;
       }
       saveAction.disabled = false;
     });

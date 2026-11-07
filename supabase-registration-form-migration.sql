@@ -16,7 +16,9 @@ alter table public.registrations
   add column if not exists nilai_rapor_semester_3 numeric,
   add column if not exists nilai_rapor_semester_4 numeric,
   add column if not exists nilai_rapor_semester_5 numeric,
-  add column if not exists pernyataan_setuju boolean;
+  add column if not exists pernyataan_setuju boolean,
+  add column if not exists tanggal_ujian date,
+  add column if not exists url_ujian text;
 
 alter table public.registrations alter column gelombang drop not null;
 alter table public.registrations add column if not exists catatan text;
