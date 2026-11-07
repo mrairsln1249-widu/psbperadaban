@@ -292,13 +292,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       ditolak: 'Pendaftaran belum dapat dilanjutkan. Silakan periksa catatan admin atau hubungi panitia jika memerlukan informasi lebih lanjut.'
     };
     const statusSummary = document.getElementById('registrationStatusSummary');
+    const registrationSectionTitle = document.getElementById('registrationSectionTitle');
     const statusMessage = document.getElementById('registrationStatusMessage');
     const resultCard = document.getElementById('resultCard');
     const examInfo = document.getElementById('examInfo');
     const announcementStatuses = new Set(['lulus', 'tidak_lulus', 'cadangan', 'daftar_ulang_selesai']);
     const resultContent = {
       lulus: {
-        title: 'Selamat, Anda Dinyatakan Lulus',
+        title: `Selamat Ananda ${registration.nama || ''}, Anda Lulus Menjadi Santri Pesantren Peradaban`,
         message: 'Selamat atas pencapaian Anda. Anda berhasil menyelesaikan proses seleksi PSB Pesantren Peradaban.',
         next: 'Silakan menunggu informasi daftar ulang yang akan disampaikan melalui portal ini.'
       },
@@ -323,6 +324,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     statusMessage.textContent = statusMessages[registration.status] || 'Silakan pantau portal ini untuk informasi terbaru mengenai pendaftaran Anda.';
     statusMessage.className = `status-message status-message--${registration.status}`;
     const isAnnouncement = announcementStatuses.has(registration.status);
+    registrationSectionTitle.hidden = isAnnouncement;
+    statusSummary.hidden = isAnnouncement;
     resultCard.hidden = !isAnnouncement;
     statusMessage.hidden = isAnnouncement;
     resultCard.className = `result-card result-card--${registration.status}`;
