@@ -72,13 +72,34 @@ document.addEventListener('DOMContentLoaded', async () => {
   const registrationLockNotice = document.getElementById('registrationLockNotice');
   const documentHelpText = document.getElementById('documentHelpText');
   const documentsPanel = document.getElementById('documentsPanel');
+  const portalTitle = document.getElementById('portalTitle');
   const editableStatuses = ['draft', 'perlu_perbaikan'];
   const completedStageStatuses = new Set([
     'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas',
     'siap_ujian', 'sudah_ujian', 'lulus', 'tidak_lulus', 'cadangan',
     'daftar_ulang_selesai'
   ]);
+  const portalTitles = {
+    draft: 'Lengkapi Pendaftaran',
+    perlu_perbaikan: 'Perbaiki Data Pendaftaran',
+    menunggu_verifikasi: 'Verifikasi Pendaftaran',
+    terverifikasi: 'Pendaftaran Terverifikasi',
+    menunggu_pembayaran: 'Persiapan Tahap Ujian',
+    pembayaran_diperiksa: 'Persiapan Tahap Ujian',
+    pembayaran_lunas: 'Persiapan Tahap Ujian',
+    siap_ujian: 'Informasi Ujian',
+    sudah_ujian: 'Menunggu Pengumuman',
+    lulus: 'Hasil Seleksi',
+    tidak_lulus: 'Hasil Seleksi',
+    cadangan: 'Hasil Seleksi',
+    daftar_ulang_selesai: 'Hasil Seleksi',
+    ditolak: 'Hasil Pendaftaran'
+  };
+  function updatePortalTitle() {
+    portalTitle.textContent = registration ? (portalTitles[registration.status] || 'Portal Pendaftar') : 'Lengkapi Pendaftaran';
+  }
   function applyRegistrationAccess() {
+    updatePortalTitle();
     const editable = Boolean(registration && editableStatuses.includes(registration.status));
     const hideApplicationDetails = Boolean(registration && completedStageStatuses.has(registration.status));
     form.querySelectorAll('input, select, textarea, button').forEach(control => { control.disabled = !editable; });
