@@ -122,3 +122,5 @@ with check (bucket_id = 'registration-documents' and auth.uid()::text = (storage
 update storage.buckets
 set file_size_limit = 1572864
 where id = 'registration-documents';
+
+notify pgrst, 'reload schema';
