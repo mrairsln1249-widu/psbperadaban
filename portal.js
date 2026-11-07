@@ -71,13 +71,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   const saveRegistration = document.getElementById('saveRegistration');
   const registrationLockNotice = document.getElementById('registrationLockNotice');
   const documentHelpText = document.getElementById('documentHelpText');
+  const documentsPanel = document.getElementById('documentsPanel');
   const editableStatuses = ['draft', 'perlu_perbaikan'];
+  const completedStageStatuses = [
+    'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas',
+    'siap_ujian', 'sudah_ujian', 'lulus', 'tidak_lulus', 'cadangan',
+    'daftar_ulang_selesai'
+  ];
   function applyRegistrationAccess() {
     const editable = Boolean(registration && editableStatuses.includes(registration.status));
+    const hideApplicationDetails = Boolean(registration && completedStageStatuses.includes(registration.status));
     form.querySelectorAll('input, select, textarea, button').forEach(control => { control.disabled = !editable; });
+    form.hidden = hideApplicationDetails;
+    documentsPanel.hidden = hideApplicationDetails;
     saveRegistration.hidden = !editable;
     submitVerification.hidden = !editable;
-    registrationLockNotice.hidden = editable || !registration;
+    registrationLockNotice.hidden = editable || !registration || hideApplicationDetails;
     registrationLockNotice.textContent = registration && registration.status === 'terverifikasi'
       ? 'Pendaftaran sudah terverifikasi. Data dan dokumen dapat dilihat sebagai arsip, tetapi tidak dapat diubah.'
       : 'Pendaftaran sedang diproses. Data dan dokumen dikunci sampai admin memberikan instruksi perbaikan.';
