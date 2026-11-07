@@ -181,8 +181,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   function printRegistrationForm() {
     populatePrintableRegistration();
     document.body.classList.add('print-registration');
-    window.print();
-    window.setTimeout(() => document.body.classList.remove('print-registration'), 500);
+    document.body.offsetHeight;
+    const cleanup = () => {
+      document.body.classList.remove('print-registration');
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
+    window.requestAnimationFrame(() => window.requestAnimationFrame(() => window.print()));
   }
 
   function splitBirthInfo(value) {
