@@ -25,12 +25,18 @@ document.addEventListener('DOMContentLoaded', async () => {
       ['Motivasi santri', registration.motivasi_santri], ['Motivasi orang tua/wali', registration.motivasi_orangtua]
     ];
     const rows = fields.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
-    const printWindow = window.open('', '_blank', 'noopener,noreferrer');
-    if (!printWindow) { status.textContent = 'Jendela cetak diblokir browser. Izinkan pop-up lalu coba lagi.'; status.className = 'portal-status is-error'; return; }
-    printWindow.document.write(`<title>Formulir Pendaftaran ${escapeHtml(registration.registration_number)}</title><style>body{font-family:Arial,sans-serif;color:#111;padding:32px}header{display:flex;gap:14px;align-items:center;border-bottom:2px solid #0b3156;padding-bottom:12px}header img{width:58px}h1{text-align:center;color:#0b3156;font-size:22px;margin:22px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.item{padding:8px 0;border-bottom:1px solid #ddd;font-size:12px}.item span{display:block;color:#666;font-size:10px;text-transform:uppercase;margin-bottom:3px}.item strong{overflow-wrap:anywhere}.statement{margin-top:24px;border:1px solid #ccc;padding:12px;font-size:12px}.sign{display:flex;justify-content:space-around;text-align:center;margin-top:80px;font-size:12px}</style><header><img src="${'logopp.png'}"><div><strong>PESANTREN PERADABAN</strong><br><span>Formulir Pendaftaran Calon Santri Baru</span></div></header><h1>Formulir Pendaftaran</h1><div class="grid">${rows}</div><div class="statement">Dengan ini saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.</div><div class="sign"><div>(________________)<br>Orang Tua / Wali</div><div>(________________)<br>Calon Santri</div></div>`);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
+    const printSheet = document.createElement('section');
+    printSheet.className = 'admin-print-sheet';
+    printSheet.innerHTML = `<header><img src="logopp.png"><div><strong>PESANTREN PERADABAN</strong><br><span>Formulir Pendaftaran Calon Santri Baru</span></div></header><h1>Formulir Pendaftaran</h1><div class="admin-print-grid">${rows}</div><div class="admin-print-statement">Dengan ini saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.</div><div class="admin-print-sign"><div>(________________)<br>Orang Tua / Wali</div><div>(________________)<br>Calon Santri</div></div>`;
+    document.body.appendChild(printSheet);
+    document.body.classList.add('admin-printing');
+    const cleanup = () => {
+      printSheet.remove();
+      document.body.classList.remove('admin-printing');
+      window.removeEventListener('afterprint', cleanup);
+    };
+    window.addEventListener('afterprint', cleanup);
+    window.print();
   }
   if (profile.data.role !== 'admin') {
     status.textContent = `Akses ditolak. Role akun ${user.email} saat ini: ${profile.data.role}.`;
