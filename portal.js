@@ -73,6 +73,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const documentHelpText = document.getElementById('documentHelpText');
   const documentsPanel = document.getElementById('documentsPanel');
   const portalTitle = document.getElementById('portalTitle');
+  const pilihanProgram = document.getElementById('pilihanProgram');
+  const pilihanProgramLabel = document.getElementById('pilihanProgramLabel');
   const editableStatuses = ['draft', 'perlu_perbaikan'];
   const completedStageStatuses = new Set([
     'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas',
@@ -98,6 +100,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   function updatePortalTitle() {
     portalTitle.textContent = registration ? (portalTitles[registration.status] || 'Portal Pendaftar') : 'Lengkapi Pendaftaran';
   }
+  function updateProgramPrompt() {
+    if (!pilihanProgram) return;
+    const prompts = {
+      SMP: 'Keterangan kelas atau program khusus (opsional)',
+      'SMA (Boarding)': 'Keterangan minat atau program asrama (opsional)',
+      'Kesetaraan Paket C': 'Keterangan kebutuhan program kesetaraan (opsional)'
+    };
+    pilihanProgramLabel.firstChild.textContent = prompts[form.elements.jenjang.value] || 'Pilihan program/keterangan khusus (opsional)';
+  }
+  form.elements.jenjang.addEventListener('change', updateProgramPrompt);
   function applyRegistrationAccess() {
     updatePortalTitle();
     const editable = Boolean(registration && editableStatuses.includes(registration.status));
@@ -121,6 +133,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     form.elements.tempat_lahir.value = registration.tempat_lahir || birthInfo.place;
     form.elements.tanggal_lahir.value = registration.tanggal_lahir || birthInfo.date;
   }
+  updateProgramPrompt();
 
   function getRegistrationValues() {
     const values = Object.fromEntries(new FormData(form));
@@ -131,6 +144,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     values.gelombang = null;
     values.pernyataan_setuju = values.pernyataan_setuju === 'true';
     return values;
+  }
+  function populatePrintableRegistration() {
+    const grid = document.getElementById('printableRegistrationGrid');
+    const fields = [
+      ['Nomor pendaftaran', registration.registration_number],
+      ['Nama calon santri', registration.nama],
+      ['Tempat, tanggal lahir', `${registration.tempat_lahir || '-'}, ${registration.tanggal_lahir || '-'}`],
+      ['Jenis kelamin', registration.jenis_kelamin],
+      ['Agama', registration.agama],
+      ['Program/jenjang', registration.jenjang],
+      ['Asal sekolah', registration.asal_sekolah],
+      ['Alamat lengkap', registration.alamat_santri || registration.alamat],
+      ['RT/RW', registration.alamat_rt_rw],
+      ['Kelurahan/Desa', registration.kelurahan],
+      ['Kecamatan', registration.kecamatan],
+      ['Kabupaten/Kota', registration.kabupaten_kota],
+      ['Nomor HP/WA santri', registration.wa_santri],
+      ['Nama ayah', registration.nama_ayah || registration.nama_wali],
+      ['Nama ibu', registration.nama_ibu],
+      ['Nomor HP/WA orang tua', registration.wa_orangtua || registration.wa_wali],
+      ['Instagram', registration.instagram],
+      ['YouTube', registration.youtube],
+      ['TikTok', registration.tiktok],
+      ['Motivasi santri', registration.motivasi_santri],
+      ['Motivasi orang tua/wali', registration.motivasi_orangtua]
+    ];
+    grid.innerHTML = '';
+    fields.forEach(([label, value]) => {
+      const item = document.createElement('div');
+      item.className = 'printable-registration__item';
+      item.innerHTML = `<span>${label}</span><strong>${String(value || '-').replace(/[<>&"]/g, character => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[character]))}</strong>`;
+      grid.appendChild(item);
+    });
+  }
+  function printRegistrationForm() {
+    populatePrintableRegistration();
+    document.body.classList.add('print-registration');
+    window.print();
+    window.setTimeout(() => document.body.classList.remove('print-registration'), 500);
   }
 
   function splitBirthInfo(value) {
@@ -209,6 +261,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const values = getRegistrationValues();
     const requiredFields = [
       'nama', 'tempat_lahir', 'tanggal_lahir', 'jenis_kelamin', 'asal_sekolah', 'jenjang',
+      'agama', 'alamat_rt_rw', 'kelurahan', 'kecamatan', 'kabupaten_kota',
       'wa_santri', 'nama_ayah', 'nama_ibu', 'wa_orangtua', 'alamat_orangtua',
       'sumber_informasi', 'motivasi_santri', 'motivasi_orangtua',
       'nilai_rapor_semester_1', 'nilai_rapor_semester_2', 'nilai_rapor_semester_3',
@@ -388,6 +441,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         printButton.textContent = 'Cetak Hasil Seleksi';
         printButton.addEventListener('click', () => window.print());
         document.getElementById('resultNext').after(printButton);
+      }
+      if (registration.status === 'lulus' && !document.getElementById('printRegistrationForm')) {
+        const formButton = document.createElement('button');
+        formButton.id = 'printRegistrationForm';
+        formButton.type = 'button';
+        formButton.className = 'btn btn--gold';
+        formButton.textContent = 'Unduh Formulir';
+        formButton.addEventListener('click', printRegistrationForm);
+        printButton.after(formButton);
       }
     }
     examInfo.hidden = registration.status !== 'siap_ujian' || !registration.tanggal_ujian;

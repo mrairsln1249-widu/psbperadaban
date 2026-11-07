@@ -11,6 +11,27 @@ document.addEventListener('DOMContentLoaded', async () => {
     status.className = 'portal-status is-error';
     return;
   }
+  function printRegistrationForm(registration, email) {
+    const escapeHtml = value => String(value || '-').replace(/[<>&"]/g, character => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[character]));
+    const fields = [
+      ['Nomor pendaftaran', registration.registration_number], ['Email akun', email],
+      ['Nama calon santri', registration.nama], ['Tempat, tanggal lahir', `${registration.tempat_lahir || '-'}, ${registration.tanggal_lahir || '-'}`],
+      ['Jenis kelamin', registration.jenis_kelamin], ['Agama', registration.agama], ['Program/jenjang', registration.jenjang],
+      ['Asal sekolah', registration.asal_sekolah], ['Alamat lengkap', registration.alamat_santri || registration.alamat],
+      ['RT/RW', registration.alamat_rt_rw], ['Kelurahan/Desa', registration.kelurahan], ['Kecamatan', registration.kecamatan],
+      ['Kabupaten/Kota', registration.kabupaten_kota], ['WA santri', registration.wa_santri],
+      ['Nama ayah', registration.nama_ayah || registration.nama_wali], ['Nama ibu', registration.nama_ibu],
+      ['WA orang tua', registration.wa_orangtua || registration.wa_wali], ['Pilihan program', registration.pilihan_program],
+      ['Motivasi santri', registration.motivasi_santri], ['Motivasi orang tua/wali', registration.motivasi_orangtua]
+    ];
+    const rows = fields.map(([label, value]) => `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`).join('');
+    const printWindow = window.open('', '_blank', 'noopener,noreferrer');
+    if (!printWindow) { status.textContent = 'Jendela cetak diblokir browser. Izinkan pop-up lalu coba lagi.'; status.className = 'portal-status is-error'; return; }
+    printWindow.document.write(`<title>Formulir Pendaftaran ${escapeHtml(registration.registration_number)}</title><style>body{font-family:Arial,sans-serif;color:#111;padding:32px}header{display:flex;gap:14px;align-items:center;border-bottom:2px solid #0b3156;padding-bottom:12px}header img{width:58px}h1{text-align:center;color:#0b3156;font-size:22px;margin:22px 0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px}.item{padding:8px 0;border-bottom:1px solid #ddd;font-size:12px}.item span{display:block;color:#666;font-size:10px;text-transform:uppercase;margin-bottom:3px}.item strong{overflow-wrap:anywhere}.statement{margin-top:24px;border:1px solid #ccc;padding:12px;font-size:12px}.sign{display:flex;justify-content:space-around;text-align:center;margin-top:80px;font-size:12px}</style><header><img src="${'logopp.png'}"><div><strong>PESANTREN PERADABAN</strong><br><span>Formulir Pendaftaran Calon Santri Baru</span></div></header><h1>Formulir Pendaftaran</h1><div class="grid">${rows}</div><div class="statement">Dengan ini saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.</div><div class="sign"><div>(________________)<br>Orang Tua / Wali</div><div>(________________)<br>Calon Santri</div></div>`);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+  }
   if (profile.data.role !== 'admin') {
     status.textContent = `Akses ditolak. Role akun ${user.email} saat ini: ${profile.data.role}.`;
     status.className = 'portal-status is-error';
@@ -184,6 +205,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveAction.type = 'button';
     saveAction.className = 'btn btn--ghost admin-action-save';
     saveAction.textContent = 'Simpan status';
+    const printFormAction = document.createElement('button');
+    printFormAction.type = 'button';
+    printFormAction.className = 'btn btn--ghost admin-action-save';
+    printFormAction.textContent = 'Cetak formulir';
+    printFormAction.addEventListener('click', () => printRegistrationForm(registration, emailByUserId.get(registration.user_id)));
     actionCell.appendChild(select);
     actionCell.appendChild(note);
     actionCell.appendChild(examHelp);
@@ -192,6 +218,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     actionCell.appendChild(cbtPassword);
     actionCell.appendChild(cbtHelp);
     actionCell.appendChild(saveAction);
+    actionCell.appendChild(printFormAction);
     select.addEventListener('change', () => {
       if (select.value === 'siap_ujian' && !cbtPassword.value) cbtPassword.value = generateCbtPassword();
     });

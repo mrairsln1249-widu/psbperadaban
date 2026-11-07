@@ -9,6 +9,7 @@
         <label>Nama Lengkap Calon Siswa/Santri *<input name="nama" required></label>
         <label>Tempat Lahir *<input name="tempat_lahir" autocomplete="address-level2" required></label>
         <label>Tanggal Lahir *<input name="tanggal_lahir" type="date" autocomplete="bday" required></label>
+        <label>Agama *<input name="agama" required></label>
         <fieldset class="full choice-group"><legend>Jenis Kelamin *</legend><label class="choice-option"><input name="jenis_kelamin" type="radio" value="Laki-laki" required> Laki-laki</label><label class="choice-option"><input name="jenis_kelamin" type="radio" value="Perempuan" required> Perempuan</label></fieldset>
         <label>Asal Sekolah *<input name="asal_sekolah" required></label>
         <label>Jenjang dan program yang akan diambil *
@@ -20,7 +21,15 @@
           </select>
         </label>
         <label class="full">Alamat Lengkap calon Santri/Siswa (Sesuai Kartu Keluarga)<textarea name="alamat_santri"></textarea></label>
+        <label>RT/RW *<input name="alamat_rt_rw" placeholder="04/02" required></label>
+        <label>Kelurahan/Desa *<input name="kelurahan" required></label>
+        <label>Kecamatan *<input name="kecamatan" required></label>
+        <label>Kabupaten/Kota *<input name="kabupaten_kota" required></label>
         <label>Nomor HP/WA Calon Siswa/Santri *<input name="wa_santri" type="tel" autocomplete="tel" required></label>
+        <label>Instagram (opsional)<input name="instagram" placeholder="@username"></label>
+        <label>YouTube (opsional)<input name="youtube" placeholder="Nama kanal atau tautan"></label>
+        <label>TikTok (opsional)<input name="tiktok" placeholder="@username"></label>
+        <label class="full" id="pilihanProgramLabel">Pilihan program/keterangan khusus (opsional)<input name="pilihan_program" id="pilihanProgram"></label>
         <label>Nama Ayah Kandung (awali dengan Alm apabila telah wafat) *<input name="nama_ayah" required></label>
         <label>Nama Ibu Kandung (awali dengan Almh apabila telah wafat) *<input name="nama_ibu" required></label>
         <label>Nomor HP/WA Orang Tua *<input name="wa_orangtua" type="tel" required></label>
@@ -44,6 +53,13 @@
       <aside class="portal-card" id="documentsPanel"><h2>Upload Dokumen</h2><p id="documentHelpText">Simpan data pendaftaran terlebih dahulu sebelum mengunggah berkas.</p><div class="document-list" id="documents"><div class="document-row"><strong>Isi data pendaftaran terlebih dahulu</strong><small>Dokumen tersedia setelah data disimpan.</small></div></div><div class="portal-verification-actions"><button class="btn btn--primary" type="button" id="submitVerification">Kirim untuk Verifikasi</button><div class="portal-status" id="registrationStatus" role="alert" aria-live="assertive" hidden></div></div></aside>
     </div>
   </main>
+  <section class="printable-registration" id="printableRegistration" aria-hidden="true">
+    <div class="printable-registration__header"><img src="logopp.png" alt="Logo Pesantren Peradaban"><div><strong>PESANTREN PERADABAN</strong><span>Formulir Pendaftaran Calon Santri Baru</span></div></div>
+    <h1>Formulir Pendaftaran</h1>
+    <div class="printable-registration__grid" id="printableRegistrationGrid"></div>
+    <div class="printable-registration__statement">Dengan ini saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.</div>
+    <div class="printable-registration__signatures"><div>(________________________)<br>Orang Tua / Wali</div><div>(________________________)<br>Calon Santri</div></div>
+  </section>
   <dialog class="registration-notice" id="registrationNotice" aria-labelledby="registrationNoticeTitle" aria-describedby="registrationNoticeMessage">
     <div class="registration-notice__content">
       <h2 id="registrationNoticeTitle">Informasi pendaftaran</h2>
@@ -51,6 +67,6 @@
       <button class="btn btn--primary" type="button" id="closeRegistrationNotice">Tutup</button>
     </div>
   </dialog>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js?v=20261107"></script><script src="supabase-client.js?v=20261107"></script><script src="portal.js?v=20261107"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js?v=20261107"></script><script src="supabase-client.js?v=20261107"></script><script src="portal.js?v=20261107c"></script>
 </body>
 </html>
