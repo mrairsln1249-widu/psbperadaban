@@ -266,9 +266,28 @@ document.addEventListener('DOMContentLoaded', async () => {
       daftar_ulang_selesai: 'Daftar Ulang Selesai',
       ditolak: 'Ditolak'
     };
+    const statusMessages = {
+      draft: 'Silakan lengkapi data dan dokumen, lalu kirim untuk verifikasi admin.',
+      perlu_perbaikan: 'Ada data atau dokumen yang perlu diperbaiki. Ikuti catatan admin sebelum mengirim ulang.',
+      menunggu_verifikasi: 'Data dan dokumen sedang diperiksa oleh admin. Mohon menunggu informasi berikutnya di portal ini.',
+      terverifikasi: 'Selamat! Administrasi pendaftaran Anda sudah sesuai dan telah terverifikasi. Silakan menunggu jadwal ujian yang akan diinformasikan melalui portal ini.',
+      menunggu_pembayaran: 'Administrasi telah diproses. Informasi tahapan ujian akan diinformasikan melalui portal ini.',
+      pembayaran_diperiksa: 'Data administrasi sedang diproses. Informasi tahapan ujian akan diinformasikan melalui portal ini.',
+      pembayaran_lunas: 'Anda siap melanjutkan ke tahap ujian. Jadwal dan informasi pelaksanaan akan diinformasikan melalui portal ini.',
+      siap_ujian: 'Anda siap mengikuti ujian. Silakan pantau portal ini untuk jadwal dan petunjuk pelaksanaan.',
+      sudah_ujian: 'Ujian telah tercatat selesai. Silakan menunggu pengumuman hasil melalui portal ini.',
+      lulus: 'Selamat! Anda dinyatakan lulus. Informasi daftar ulang akan disampaikan melalui portal ini.',
+      tidak_lulus: 'Terima kasih telah mengikuti proses seleksi. Informasi ini merupakan hasil akhir pendaftaran Anda.',
+      cadangan: 'Anda masuk dalam daftar cadangan. Silakan pantau portal ini untuk informasi perkembangan selanjutnya.',
+      daftar_ulang_selesai: 'Selamat! Proses daftar ulang Anda telah selesai.',
+      ditolak: 'Pendaftaran belum dapat dilanjutkan. Silakan periksa catatan admin atau hubungi panitia jika memerlukan informasi lebih lanjut.'
+    };
     const statusSummary = document.getElementById('registrationStatusSummary');
+    const statusMessage = document.getElementById('registrationStatusMessage');
     statusSummary.textContent = `Status pendaftaran: ${statusLabels[registration.status] || registration.status}`;
     statusSummary.className = `status-summary status-summary--${registration.status}`;
+    statusMessage.textContent = statusMessages[registration.status] || 'Silakan pantau portal ini untuk informasi terbaru mengenai pendaftaran Anda.';
+    statusMessage.className = `status-message status-message--${registration.status}`;
     document.getElementById('statusStepper').innerHTML = steps.map((step, index) => {
       const state = index < currentIndex ? 'is-done' : index === currentIndex ? 'is-current' : '';
       return `<span class="status-step ${state}">${step[1]}</span>`;

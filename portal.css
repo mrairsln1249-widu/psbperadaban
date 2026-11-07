@@ -79,6 +79,9 @@
 .status-summary { margin: 0 0 12px; padding: 12px 14px; border-left: 4px solid var(--accent); border-radius: 8px; background: #f8fafb; color: var(--primary); font-size: 14px; font-weight: 700; }
 .status-summary--terverifikasi, .status-summary--siap_ujian, .status-summary--sudah_ujian, .status-summary--lulus, .status-summary--daftar_ulang_selesai { border-left-color: var(--success); background: #f0fdf7; }
 .status-summary--perlu_perbaikan, .status-summary--tidak_lulus, .status-summary--ditolak { border-left-color: var(--danger); background: #fff5f5; }
+.status-message { margin: 0 0 18px; padding: 13px 15px; border: 1px solid var(--line); border-radius: 9px; background: #f8fafb; color: var(--ink-2); font-size: 13px; line-height: 1.6; }
+.status-message--terverifikasi, .status-message--lulus, .status-message--daftar_ulang_selesai { border-color: rgb(16 185 129 / 30%); background: #f0fdf7; color: #087443; }
+.status-message--perlu_perbaikan, .status-message--tidak_lulus, .status-message--ditolak { border-color: rgb(239 68 68 / 30%); background: #fff5f5; }
 .registration-lock-notice { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink-2); font-size: 13px; font-weight: 600; }
 .registration-lock-notice:not([hidden]) { display: block; }
 .portal-form input:disabled, .portal-form select:disabled, .portal-form textarea:disabled { background: #f3f5f7; color: var(--ink-2); cursor: not-allowed; opacity: 1; }
