@@ -306,6 +306,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         link.className = 'btn btn--primary';
         examInfo.appendChild(link);
       }
+      if (registration.cbt_username && registration.cbt_password) {
+        const credentials = document.createElement('div');
+        credentials.className = 'cbt-credentials';
+        credentials.innerHTML = '<strong>Akses CBT sementara</strong>';
+        const username = document.createElement('p');
+        username.textContent = `Username/email: ${registration.cbt_username}`;
+        const password = document.createElement('p');
+        password.textContent = `Password sementara: ${registration.cbt_password}`;
+        const note = document.createElement('small');
+        note.textContent = 'Gunakan kredensial ini setelah admin selesai membuat akun Moodle. Segera ganti password saat login pertama.';
+        credentials.append(username, password, note);
+        examInfo.appendChild(credentials);
+      }
     }
     document.getElementById('statusStepper').innerHTML = steps.map((step, index) => {
       const state = index < currentIndex ? 'is-done' : index === currentIndex ? 'is-current' : '';

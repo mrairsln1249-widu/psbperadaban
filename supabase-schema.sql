@@ -40,6 +40,8 @@ create table if not exists public.registrations (
   catatan text,
   tanggal_ujian date,
   url_ujian text,
+  cbt_username text,
+  cbt_password text,
   status text not null default 'draft' check (status in ('draft', 'menunggu_verifikasi', 'perlu_perbaikan', 'terverifikasi', 'menunggu_pembayaran', 'pembayaran_diperiksa', 'pembayaran_lunas', 'siap_ujian', 'sudah_ujian', 'lulus', 'tidak_lulus', 'cadangan', 'daftar_ulang_selesai', 'ditolak')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

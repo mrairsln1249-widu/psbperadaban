@@ -86,6 +86,9 @@
 .exam-info[hidden] { display: none; }
 .exam-info p { margin: 6px 0 12px; }
 .exam-info .btn { display: inline-block; color: var(--primary); }
+.cbt-credentials { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgb(16 185 129 / 25%); color: var(--primary); }
+.cbt-credentials p { margin: 6px 0; overflow-wrap: anywhere; }
+.cbt-credentials small { display: block; color: var(--ink-2); }
 .registration-lock-notice { margin: 0 0 16px; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; background: #f8fafb; color: var(--ink-2); font-size: 13px; font-weight: 600; }
 .registration-lock-notice:not([hidden]) { display: block; }
 .portal-form input:disabled, .portal-form select:disabled, .portal-form textarea:disabled { background: #f3f5f7; color: var(--ink-2); cursor: not-allowed; opacity: 1; }

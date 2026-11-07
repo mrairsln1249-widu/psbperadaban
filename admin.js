@@ -72,6 +72,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (digits.startsWith('62')) return digits;
     return '';
   }
+  function generateCbtPassword() {
+    const alphabet = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+    const values = new Uint32Array(12);
+    crypto.getRandomValues(values);
+    return Array.from(values, value => alphabet[value % alphabet.length]).join('');
+  }
   const result = await client.from('registrations').select('*').order('created_at', { ascending: false });
   if (result.error) { status.textContent = result.error.message; return; }
   const userIds = result.data.map(registration => registration.user_id).filter(Boolean);
@@ -163,6 +169,16 @@ document.addEventListener('DOMContentLoaded', async () => {
     const examHelp = document.createElement('small');
     examHelp.className = 'admin-exam-help';
     examHelp.textContent = 'Isi jadwal dan URL CBT jika status Siap Ujian.';
+    const cbtPassword = document.createElement('input');
+    cbtPassword.type = 'text';
+    cbtPassword.className = 'admin-exam-field';
+    cbtPassword.placeholder = 'Password CBT sementara';
+    cbtPassword.value = registration.cbt_password || '';
+    cbtPassword.readOnly = true;
+    cbtPassword.setAttribute('aria-label', `Password CBT untuk ${registration.nama || 'pendaftar'}`);
+    const cbtHelp = document.createElement('small');
+    cbtHelp.className = 'admin-exam-help';
+    cbtHelp.textContent = 'Password acak dibuat sekali dan harus diganti saat login pertama Moodle.';
     const saveAction = document.createElement('button');
     saveAction.type = 'button';
     saveAction.className = 'btn btn--ghost admin-action-save';
@@ -172,7 +188,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     actionCell.appendChild(examHelp);
     actionCell.appendChild(examDate);
     actionCell.appendChild(examUrl);
+    actionCell.appendChild(cbtPassword);
+    actionCell.appendChild(cbtHelp);
     actionCell.appendChild(saveAction);
+    select.addEventListener('change', () => {
+      if (select.value === 'siap_ujian' && !cbtPassword.value) cbtPassword.value = generateCbtPassword();
+    });
     documentsCell.textContent = 'Memuat...';
     [numberCell, nameCell, emailCell, jenjangCell, waliCell, detailsCell, documentsCell, statusCell, actionCell].forEach(cell => row.appendChild(cell));
     saveAction.addEventListener('click', async () => {
@@ -189,11 +210,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         saveAction.disabled = false;
         return;
       }
+      if (select.value === 'siap_ujian' && !emailByUserId.get(registration.user_id)) {
+        status.textContent = 'Email akun pendaftar belum tersedia. Jalankan migration email profile terlebih dahulu.';
+        status.className = 'portal-status is-error';
+        saveAction.disabled = false;
+        return;
+      }
+      if (select.value === 'siap_ujian' && !cbtPassword.value) cbtPassword.value = generateCbtPassword();
+      const cbtUsername = emailByUserId.get(registration.user_id) || null;
       const update = await client.from('registrations').update({
         status: select.value,
         catatan: note.value.trim() || null,
         tanggal_ujian: examDate.value || null,
         url_ujian: examUrl.value.trim() || null,
+        cbt_username: select.value === 'siap_ujian' ? cbtUsername : registration.cbt_username || null,
+        cbt_password: select.value === 'siap_ujian' ? cbtPassword.value : registration.cbt_password || null,
         updated_at: new Date().toISOString()
       }).eq('id', registration.id);
       status.textContent = update.error ? update.error.message : 'Status pendaftar berhasil diperbarui.';
@@ -204,6 +235,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         registration.catatan = note.value.trim();
         registration.tanggal_ujian = examDate.value || null;
         registration.url_ujian = examUrl.value.trim() || null;
+        registration.cbt_username = select.value === 'siap_ujian' ? cbtUsername : registration.cbt_username;
+        registration.cbt_password = select.value === 'siap_ujian' ? cbtPassword.value : registration.cbt_password;
       }
       saveAction.disabled = false;
     });
